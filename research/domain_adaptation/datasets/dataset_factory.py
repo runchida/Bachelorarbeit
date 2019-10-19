@@ -21,8 +21,8 @@ from __future__ import print_function
 # Dependency imports
 import tensorflow as tf
 
-from slim.datasets import mnist
-from domain_adaptation.datasets import mnist_m
+from research.slim.datasets import mnist
+from research.domain_adaptation.datasets import mnist_m
 
 slim = tf.contrib.slim
 
@@ -72,7 +72,7 @@ def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
     reader: The subclass of tf.ReaderBase. If left as `None`, then the default
       reader defined by each dataset is used.
 
-  Returns:
+  Returns:dsn
     A batch of
       images: tensor of [batch_size, height, width, channels].
       labels: dictionary of labels.

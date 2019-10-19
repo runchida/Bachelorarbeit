@@ -18,8 +18,8 @@ from __future__ import division
 
 import tensorflow as tf
 
-from domain_adaptation.datasets import dataset_factory
-import dsn
+from research.domain_adaptation.datasets import dataset_factory
+from research.domain_adaptation.domain_separation import dsn
 
 slim = tf.contrib.slim
 FLAGS = tf.app.flags.FLAGS
@@ -275,4 +275,17 @@ def main(_):
 
 
 if __name__ == '__main__':
+  FLAGS.similarity_loss = 'dann_loss'
+  FLAGS.basic_tower = 'dann_mnist'
+  FLAGS.source_dataset = 'mnist'
+  FLAGS.target_dataset = 'mnist_m'
+  FLAGS.learning_rate = 0.0117249
+  FLAGS.gamma_weight = 0.251175
+  FLAGS.weight_decay = 1e-6
+  FLAGS.layers_to_regularize = 'fc3'
+  FLAGS.master = ''
+  FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
+  FLAGS.max_number_of_steps = 5000
+
+
   tf.app.run()

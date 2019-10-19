@@ -35,7 +35,7 @@ import numpy as np
 from six.moves import urllib
 import tensorflow as tf
 
-from slim.datasets import dataset_utils
+from datasets import dataset_utils
 
 tf.app.flags.DEFINE_string(
     'dataset_dir', None,
@@ -88,6 +88,7 @@ class ImageReader(object):
   def decode_png(self, sess, image_data):
     image = sess.run(
         self._decode_png, feed_dict={self._decode_png_data: image_data})
+    print('decode_png')
     assert len(image.shape) == 3
     assert image.shape[2] == 3
     return image
@@ -120,11 +121,11 @@ def _convert_dataset(split_name, filenames, filename_to_class_id, dataset_dir):
         for filename in filenames:
           # Read the filename:
           image_data = tf.gfile.FastGFile(
-              os.path.join(png_directory, filename), 'r').read()
+              os.path.join(png_directory, filename), 'rb').read()
           height, width = image_reader.read_image_dims(sess, image_data)
 
           class_id = filename_to_class_id[filename]
-          example = dataset_utils.image_to_tfexample(image_data, 'png', height,
+          example = dataset_utils.image_to_tfexample(image_data, b'png', height,
                                                      width, class_id)
           tfrecord_writer.write(example.SerializeToString())
 
@@ -229,7 +230,8 @@ def run(dataset_dir):
 
 
 def main(_):
-  assert FLAGS.dataset_dir
+  ##assert FLAGS.dataset_dir
+  FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
   run(FLAGS.dataset_dir)
 
 

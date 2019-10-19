@@ -27,9 +27,7 @@ from functools import partial
 
 import tensorflow as tf
 
-import losses
-import models
-import utils
+from research.domain_adaptation.domain_separation import losses, models, utils
 
 slim = tf.contrib.slim
 

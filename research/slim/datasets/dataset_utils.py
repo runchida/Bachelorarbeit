@@ -74,6 +74,8 @@ def bytes_feature(values):
   Returns:
     A TF-Feature.
   """
+  if isinstance(values, type(tf.constant(0))):
+    values = values.numpy()  # BytesList won't unpack a string from an EagerTensor.
   return tf.train.Feature(bytes_list=tf.train.BytesList(value=[values]))
 
 

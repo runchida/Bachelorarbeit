@@ -22,9 +22,9 @@ import numpy as np
 from six.moves import xrange
 import tensorflow as tf
 
-from domain_adaptation.datasets import dataset_factory
-from domain_adaptation.domain_separation import losses
-from domain_adaptation.domain_separation import models
+from research.domain_adaptation.datasets import dataset_factory
+from research.domain_adaptation.domain_separation import losses
+from research.domain_adaptation.domain_separation import models
 
 slim = tf.contrib.slim
 
@@ -138,10 +138,15 @@ def main(_):
 
     # Create the summary ops such that they also print out to std output:
     summary_ops = []
-    for metric_name, metric_value in names_to_values.iteritems():
+    metric_names_list = list(names_to_values.keys())
+    metric_values_list = list(names_to_values.values())
+
+
+    for metric_name, metric_value in names_to_values.items():
       op = tf.summary.scalar(metric_name, metric_value)
       op = tf.Print(op, [metric_value], metric_name)
       summary_ops.append(op)
+
 
     # This ensures that we make a single pass over all of the data.
     num_batches = math.ceil(FLAGS.num_examples / float(FLAGS.batch_size))
@@ -153,9 +158,14 @@ def main(_):
         checkpoint_dir=FLAGS.checkpoint_dir,
         logdir=FLAGS.eval_dir,
         num_evals=num_batches,
-        eval_op=names_to_updates.values(),
-        summary_op=tf.summary.merge(summary_ops))
+        summary_op=tf.summary.merge(summary_ops),
+        eval_op=list(names_to_updates.values())
+        )
 
 
 if __name__ == '__main__':
+  FLAGS.dataset = 'mnist_m'
+  FLAGS.split = 'test'
+  FLAGS.num_examples = 9001
+  FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
   tf.app.run()
