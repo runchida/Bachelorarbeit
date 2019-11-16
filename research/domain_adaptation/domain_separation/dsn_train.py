@@ -20,6 +20,8 @@ import tensorflow as tf
 
 from research.domain_adaptation.datasets import dataset_factory
 from research.domain_adaptation.domain_separation import dsn
+from research.domain_adaptation.datasets import mixed
+from tutorials.rnn.quickdraw.train_model import get_num_classes
 
 slim = tf.contrib.slim
 FLAGS = tf.app.flags.FLAGS
@@ -123,6 +125,10 @@ tf.app.flags.DEFINE_string('decoder_name', 'small_decoder',
 tf.app.flags.DEFINE_string('encoder_name', 'default_encoder',
                            'The encoder to use.')
 
+tf.app.flags.DEFINE_integer(
+    'num_classes', None,
+    'Number of classes in mnist, mnist-m')
+
 ################################################################################
 # Flags that control the architecture and losses
 ################################################################################
@@ -160,6 +166,7 @@ def main(_):
         'use_logging': FLAGS.use_logging,
         'ps_tasks': FLAGS.ps_tasks,
         'task': FLAGS.task,
+        'num_classes': FLAGS.num_classes
     }
 
     g = tf.Graph()
@@ -172,6 +179,18 @@ def main(_):
             target_images, target_labels = provide_batch_fn()(
                 FLAGS.target_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
                 FLAGS.batch_size, FLAGS.num_preprocessing_threads)
+
+            if FLAGS.source_dataset == 'mixed':
+                source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed(
+                    FLAGS.num_classes)
+                source_images, source_labels = provide_batch_fn()(
+                    'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=source_mnist_labels,
+                    labels_two=source_mnist_m_labels)
+                target_images, target_labels = provide_batch_fn()(
+                    'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=target_mnist_labels,
+                    labels_two=target_mnist_m_labels)
 
             # In the unsupervised case all the samples in the labeled
             # domain are from the source domain.
@@ -278,16 +297,16 @@ def main(_):
 
 
 if __name__ == '__main__':
-    # FLAGS.similarity_loss = 'dann_loss'
-    # FLAGS.basic_tower = 'dann_mnist'
-    # FLAGS.source_dataset = 'mnist'
-    # FLAGS.target_dataset = 'mnist_m'
-    # FLAGS.learning_rate = 0.0117249
-    # FLAGS.gamma_weight = 0.251175
-    # FLAGS.weight_decay = 1e-6
-    # FLAGS.layers_to_regularize = 'fc3'
-    # FLAGS.master = ''
-    # FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
-    # FLAGS.max_number_of_steps = 5000
+    FLAGS.similarity_loss = 'dann_loss'
+    FLAGS.basic_tower = 'dann_mnist'
+    FLAGS.source_dataset = 'mnist'
+    FLAGS.target_dataset = 'mnist_m'
+    FLAGS.learning_rate = 0.0117249
+    FLAGS.gamma_weight = 0.251175
+    FLAGS.weight_decay = 1e-6
+    FLAGS.layers_to_regularize = 'fc3'
+    FLAGS.master = ''
+    FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
+    FLAGS.max_number_of_steps = 5000
 
     tf.app.run()

@@ -35,12 +35,13 @@ import numpy as np
 from six.moves import urllib
 import tensorflow as tf
 
+
 from datasets import dataset_utils
 
-tf.app.flags.DEFINE_string(
-    'dataset_dir', None,
-    'The directory where the output TFRecords and temporary files are saved.')
-
+# tf.app.flags.DEFINE_string(
+#     'dataset_dir', None,
+#     'The directory where the output TFRecords and temporary files are saved.')
+#
 FLAGS = tf.app.flags.FLAGS
 
 _IMAGE_SIZE = 32
@@ -164,7 +165,6 @@ def _get_output_filename(dataset_dir, split_name):
   """
   return '%s/mnist_m_%s.tfrecord' % (dataset_dir, split_name)
 
-
 def _get_filenames(dataset_dir):
   """Returns a list of filenames and inferred class names.
 
@@ -230,8 +230,8 @@ def run(dataset_dir):
 
 
 def main(_):
-  ##assert FLAGS.dataset_dir
-  FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
+  assert FLAGS.dataset_dir
+  #FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
   run(FLAGS.dataset_dir)
 
 
