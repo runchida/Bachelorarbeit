@@ -28,31 +28,84 @@ _ITEMS_TO_DESCRIPTIONS_MNIST_M = {
     'label': 'A single integer between 0 and 9',
 }
 
-def get_split(split_name, dataset_dir, labels_one, labels_two, file_pattern=None, reader=None):
-    """Gets a dataset tuple with instructions for reading MNIST.
+def get_split(split_name, dataset_dir, labels_one, labels_two, file_pattern=None):
+    # get tf.data.Dataset
 
-    Args:
-      split_name: A train/test split name.
-      dataset_dir: The base directory of the dataset sources.
-      file_pattern: The file pattern to use when matching the dataset sources.
-        It is assumed that the pattern contains a '%s' string so that the split
-        name can be inserted.
-      reader: The TensorFlow reader type.
-
-    Returns:
-      A `Dataset` namedtuple.
-
-    Raises:
-      ValueError: if `split_name` is not a valid train/test split.
-    """
     if split_name not in _SPLITS_TO_SIZES:
         raise ValueError('split name %s was not recognized.' % split_name)
 
-    file_list = get_file_list(dataset_dir, file_pattern, split_name, labels_one, labels_two)
+    file_list_mnist, file_list_mnist_m = get_file_list(dataset_dir, file_pattern, split_name, labels_one, labels_two)
 
-    # Allowing None in the signature so that dataset_factory can use the default.
-    if reader is None:
-        reader = tf.TFRecordReader
+    dataset_mnist = tf.data.TFRecordDataset(file_list_mnist)
+    dataset_mnist_m = tf.data.TFRecordDataset(file_list_mnist_m)
+    dataset_mnist = dataset_mnist.map(decode_gray)
+    dataset_mnist_m = dataset_mnist_m.map(decode_rgb)
+
+    # tf.data.Dataset
+    return dataset_mnist, dataset_mnist_m
+
+
+# def get_split(split_name, dataset_dir, labels_one, labels_two, file_pattern=None, reader=None):
+#     """Gets a dataset tuple with instructions for reading MNIST.
+#
+#     Args:
+#       split_name: A train/test split name.
+#       dataset_dir: The base directory of the dataset sources.
+#       file_pattern: The file pattern to use when matching the dataset sources.
+#         It is assumed that the pattern contains a '%s' string so that the split
+#         name can be inserted.
+#       reader: The TensorFlow reader type.
+#
+#     Returns:
+#       A `Dataset` namedtuple.
+#
+#     Raises:
+#       ValueError: if `split_name` is not a valid train/test split.
+#     """
+#     if split_name not in _SPLITS_TO_SIZES:
+#         raise ValueError('split name %s was not recognized.' % split_name)
+#
+#     if not file_pattern:
+#         file_list = get_file_list(dataset_dir, file_pattern, split_name, labels_one, labels_two)
+#
+#     # Allowing None in the signature so that dataset_factory can use the default.
+#     if reader is None:
+#         reader = tf.TFRecordReader
+#
+#     keys_to_features = {
+#         'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
+#         'image/format': tf.FixedLenFeature((), tf.string, default_value='raw'),
+#         'image/class/label': tf.FixedLenFeature(
+#             [1], tf.int64, default_value=tf.zeros([1], dtype=tf.int64)),
+#     }
+#
+#     items_to_handlers = {
+#         'image': slim.tfexample_decoder.Image(shape=[28, 28, 1], channels=1),
+#         'label': slim.tfexample_decoder.Tensor('image/class/label', shape=[]),
+#     }
+#
+#     decoder = slim.tfexample_decoder.TFExampleDecoder(
+#         keys_to_features, items_to_handlers)
+#
+#     labels_to_names = None
+#     if dataset_utils.has_labels(dataset_dir):
+#         labels_to_names = dataset_utils.read_label_file(dataset_dir)
+#
+#     return slim.dataset.Dataset(
+#         data_sources=file_list,
+#         reader=reader,
+#         decoder=decoder,
+#         num_samples=_SPLITS_TO_SIZES[split_name],
+#         num_classes=_NUM_CLASSES,
+#         items_to_descriptions=_ITEMS_TO_DESCRIPTIONS,
+#         labels_to_names=labels_to_names)
+
+
+def decode_gray(serialized_example):
+    """
+    Parses an image and label from the given `serialized_example`.
+    It is used as a map function for `dataset.map`
+    """
 
     keys_to_features = {
         'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
@@ -61,31 +114,60 @@ def get_split(split_name, dataset_dir, labels_one, labels_two, file_pattern=None
             [1], tf.int64, default_value=tf.zeros([1], dtype=tf.int64)),
     }
 
-    items_to_handlers = {
-        'image': slim.tfexample_decoder.Image(shape=[28, 28, 1], channels=1),
-        'label': slim.tfexample_decoder.Tensor('image/class/label', shape=[]),
+    # 1. define a parser
+    parsed_dataset = tf.io.parse_single_example(
+        serialized_example,
+        # Defaults are not specified since both keys are required.
+        features=keys_to_features)
+    # #
+    # 2. Convert the data
+    image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
+    label = tf.cast(parsed_dataset['image/class/label'], tf.uint8)
+
+    image = tf.image.grayscale_to_rgb(image)
+    image = tf.image.resize_images(image, [32, 32])
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    label = tf.reshape(label, shape=[])
+
+    return image, label
+
+def decode_rgb(serialized_example):
+    """
+    Parses an image and label from the given `serialized_example`.
+    It is used as a map function for `dataset.map`
+    """
+
+    keys_to_features = {
+        'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
+        'image/format': tf.FixedLenFeature((), tf.string, default_value='raw'),
+        'image/class/label': tf.FixedLenFeature(
+            [1], tf.int64, default_value=tf.zeros([1], dtype=tf.int64)),
     }
 
-    decoder = slim.tfexample_decoder.TFExampleDecoder(
-        keys_to_features, items_to_handlers)
+    # 1. define a parser
+    parsed_dataset = tf.io.parse_single_example(
+        serialized_example,
+        # Defaults are not specified since both keys are required.
+        features=keys_to_features)
+    # #
+    # 2. Convert the data
+    image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
+    label = tf.cast(parsed_dataset['image/class/label'], tf.uint8)
 
-    labels_to_names = None
-    if dataset_utils.has_labels(dataset_dir):
-        labels_to_names = dataset_utils.read_label_file(dataset_dir)
+    image = tf.image.resize_images(image, [32, 32])
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.reshape(image, [32, 32, 3])
+    label = tf.reshape(label, shape=[])
 
-    return slim.dataset.Dataset(
-        data_sources=file_list,
-        reader=reader,
-        decoder=decoder,
-        num_samples=_SPLITS_TO_SIZES[split_name],
-        num_classes=_NUM_CLASSES,
-        items_to_descriptions=_ITEMS_TO_DESCRIPTIONS,
-        labels_to_names=labels_to_names)
+    return image, label
 
 
 def get_class_labels(num_classes):
-
+    # get lists of labels for source and target domains
     # labels one
+    if num_classes < 5:
+        raise ValueError('Number of classes must be between 5 to 10')
+
     class_labels_one = []
     fill_list(class_labels_one, num_classes)
 
@@ -96,7 +178,7 @@ def get_class_labels(num_classes):
         append = not (has_number(class_labels_one, x))
         if append:
             class_labels_two.append(x)
-            class_labels_target_one(x)
+            class_labels_target_one.append(x)
     fill_list(class_labels_two, num_classes)
 
     class_labels_target_two = []
@@ -108,7 +190,8 @@ def get_class_labels(num_classes):
     return class_labels_one, class_labels_two, class_labels_target_one, class_labels_target_two
 
 
-def fill_list (list, num_classes):
+def fill_list(list, num_classes):
+    # fill a list with numbers until it has 'num_classes' members
     while len(list) < num_classes:
         randnum = np.random.randint(0, 10)
         append = not (has_number(list, randnum))
@@ -116,42 +199,34 @@ def fill_list (list, num_classes):
             list.append(randnum)
     return list
 
+
 def has_number(list, num):
+    # check if a list contains number num
     check = False
     for member in list:
         if member == num:
             check = True
     return check
 
-def get_file_list(dataset_dir, file_pattern, split_name, labels_one, labels_two):
 
+def get_file_list(dataset_dir, file_pattern, split_name, labels_mnist, labels_mnist_m):
+    # create list of files lead to mnist with labels_one and mnist-m with labels_two
     # lists of paths to separated tfrecord for mixed-domain case
     file_list_mnist = []
     file_list_mnist_m = []
 
     if not file_pattern:
-        for class_label in labels_one:
+        for class_label in labels_mnist:
             file_pattern = _FILE_PATTERN_ONE_CLASS['mnist']
             file_pattern = os.path.join(dataset_dir, 'mix', file_pattern % (split_name, str(class_label)))
             file_list_mnist.append(file_pattern)
 
-        for class_label in labels_two:
+        for class_label in labels_mnist_m:
             file_pattern = _FILE_PATTERN_ONE_CLASS['mnist_m']
             file_pattern = os.path.join(dataset_dir, 'mix', file_pattern % (split_name, str(class_label)))
             file_list_mnist_m.append(file_pattern)
 
-        file_list = file_list_mnist + file_list_mnist_m
-
-        return file_list
+        return file_list_mnist, file_list_mnist_m
 
     else:
         return file_pattern
-
-
-def main(_):
-    a, b = get_class_labels(7)
-    print(a, b)
-
-
-if __name__ == '__main__':
-    tf.app.run()

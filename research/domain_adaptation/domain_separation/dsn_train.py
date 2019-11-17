@@ -172,16 +172,9 @@ def main(_):
     g = tf.Graph()
     with g.as_default():
         with tf.device(tf.train.replica_device_setter(FLAGS.ps_tasks)):
-            # Load the data.
-            source_images, source_labels = provide_batch_fn()(
-                FLAGS.source_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
-                FLAGS.batch_size, FLAGS.num_preprocessing_threads)
-            target_images, target_labels = provide_batch_fn()(
-                FLAGS.target_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
-                FLAGS.batch_size, FLAGS.num_preprocessing_threads)
 
             if FLAGS.source_dataset == 'mixed':
-                source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed(
+                source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed.get_class_labels(
                     FLAGS.num_classes)
                 source_images, source_labels = provide_batch_fn()(
                     'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
@@ -191,6 +184,15 @@ def main(_):
                     'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
                     FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=target_mnist_labels,
                     labels_two=target_mnist_m_labels)
+
+            else:
+                # Load the data.
+                source_images, source_labels = provide_batch_fn()(
+                    FLAGS.source_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.batch_size, FLAGS.num_preprocessing_threads)
+                target_images, target_labels = provide_batch_fn()(
+                    FLAGS.target_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.batch_size, FLAGS.num_preprocessing_threads)
 
             # In the unsupervised case all the samples in the labeled
             # domain are from the source domain.
@@ -308,5 +310,6 @@ if __name__ == '__main__':
     FLAGS.master = ''
     FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
     FLAGS.max_number_of_steps = 5000
+    FLAGS.num_classes = 6
 
     tf.app.run()

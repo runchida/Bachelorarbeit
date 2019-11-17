@@ -10,10 +10,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # Dependency imports
 import tensorflow as tf
 import numpy as np
+
 slim = tf.contrib.slim
 from research.domain_adaptation.datasets import mixed
 import matplotlib.pyplot as plt
-
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -50,7 +50,6 @@ def _get_output_filename(dataset_dir, split_name):
 
 
 def run(dataset_dir):
-
     pull_these_numbers(dataset_dir)
 
     return 0
@@ -79,7 +78,6 @@ def decode(serialized_example):
     # decoder = slim.tfexample_decoder.TFExampleDecoder(
     #     keys_to_features, items_to_handlers)
 
-
     # 1. define a parser
     parsed_dataset = tf.io.parse_single_example(
         serialized_example,
@@ -87,45 +85,48 @@ def decode(serialized_example):
         features=keys_to_features)
     #
     # 2. Convert the data
-    image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
-    label = tf.cast(parsed_dataset['image/class/label'], tf.int32)
-    # 3. reshape
-    # #image.set_shape((IMAGE_PIXELS))
+    # image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
+    # label = tf.cast(parsed_dataset['image/class/label'], tf.int32)
 
-    return image, label
+    return parsed_dataset
 
 
 def pull_these_numbers(dataset_dir):
     tf.enable_eager_execution()
-    #filename = os.path.join(dataset_dir, 'standard', 'mnist_test.tfrecord')
-    filename = os.path.join(dataset_dir, 'mnist_m_train_1.tfrecord')
 
-    dataset = tf.data.TFRecordDataset(filename)
-    #dataset = tf.data.TFRecordDataset(file_list)
+    filename = os.path.join(dataset_dir, 'mnist_m_train_1.tfrecord')
+    labels1, labels2, labels3, labels4 = mixed.get_class_labels(5)
+    file_list = mixed.get_file_list(dataset_dir, file_pattern=None, split_name='test', labels_mnist=labels1,
+                                    labels_mnist_m=labels2)
+
+    # dataset = tf.data.TFRecordDataset(filename)
+    dataset = tf.data.TFRecordDataset(file_list)
 
     dataset = dataset.shuffle(8000)
 
-    for raw in dataset.take(1):
-        print(repr(raw))
+    # for raw in dataset.take(1):
+    #     print('Raw data from dataset: \n', repr(raw))
 
     dataset = dataset.map(decode)
-    #image = tf.io.decode_raw(dataset['image/encoded'], dtype=tf.int32)
-    for decoded in dataset.take(1):
-        print("Decoded dataset: ", repr(decoded))
-        #print(repr(image))
-
-
-
+    # for decoded in dataset.take(1):
+    #     print("Decoded data from dataset: \n", repr(decoded))
+    # print(repr(image))
 
     for decoded in dataset.take(10):
-        plt.imshow(decoded[0].numpy())
-        plt.show()
-        print(decoded[0].numpy())
-        print(decoded[1].numpy())
-        # with tf.Session() as sess:
-        #     a = decoded[0].eval()
-        #     print(a)
+        image = tf.io.decode_png(decoded['image/encoded'], channels=0, dtype=tf.uint8)
+        label = tf.cast(decoded['image/class/label'], tf.int32)
+        if image.get_shape() == (28, 28, 1):
+            image = tf.image.grayscale_to_rgb(image)
+            image = tf.image.resize(image, [32, 32])
+            print('mnist')
 
+            print(image.get_shape())
+        else:
+            print('mnist_m')
+        plt.imshow(image.numpy())
+        plt.show()
+        # print(decoded[0].numpy())
+        print(label.numpy())
 
 
 def main(_):
@@ -133,6 +134,7 @@ def main(_):
 
     # FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
     run(FLAGS.dataset_dir)
+
 
 
 if __name__ == '__main__':

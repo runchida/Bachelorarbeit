@@ -53,9 +53,7 @@ def get_dataset(dataset_name,
         raise ValueError('Name of dataset unknown %s.' % dataset_name)
 
     if dataset_name == 'mixed':
-        return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir,
-                                                              file_pattern, reader, labels_one=labels_one,
-                                                              labels_two=labels_two)
+        return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir, labels_one, labels_two)
     else:
         return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir,
                                                               file_pattern, reader)
@@ -82,41 +80,62 @@ def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
         labels: dictionary of labels.
     """
 
-    dataset = get_dataset(dataset_name, split_name, dataset_dir, labels_one=labels_one, labels_two=labels_two)
-    provider = slim.dataset_data_provider.DatasetDataProvider(
-        dataset,
-        num_readers=num_readers,
-        common_queue_capacity=20 * batch_size,
-        common_queue_min=10 * batch_size)
-    [image, label] = provider.get(['image', 'label'])
+    if dataset_name != 'mixed':
+        dataset = get_dataset(dataset_name, split_name, dataset_dir)
+        provider = slim.dataset_data_provider.DatasetDataProvider(
+            dataset,
+            num_readers=num_readers,
+            common_queue_capacity=20 * batch_size,
+            common_queue_min=10 * batch_size)
+        [image, label] = provider.get(['image', 'label'])
 
-    # Convert images to float32
-    image = tf.image.convert_image_dtype(image, tf.float32)
-    image -= 0.5
-    image *= 2
+        # Convert images to float32
+        image = tf.image.convert_image_dtype(image, tf.float32)
+        image -= 0.5
+        image *= 2
 
-    # Load the data.
-    labels = {}
-    images, labels['classes'] = tf.train.batch(
-        [image, label],
-        batch_size=batch_size,
-        num_threads=num_preprocessing_threads,
-        capacity=5 * batch_size)
+        # Load the data.
+        labels = {}
+        images, labels['classes'] = tf.train.batch(
+            [image, label],
+            batch_size=batch_size,
+            num_threads=num_preprocessing_threads,
+            capacity=5 * batch_size)
 
-    labels['classes'] = slim.one_hot_encoding(labels['classes'],
-                                              dataset.num_classes)
+        labels['classes'] = slim.one_hot_encoding(labels['classes'],
+                                                  dataset.num_classes)
 
-    # Convert mnist to RGB and 32x32 so that it can match mnist_m.
-    if dataset_name == 'mnist':
-        images = tf.image.grayscale_to_rgb(images)
-        images = tf.image.resize_images(images, [32, 32])
+        # Convert mnist to RGB and 32x32 so that it can match mnist_m.
+        if dataset_name == 'mnist':
+            images = tf.image.grayscale_to_rgb(images)
+            images = tf.image.resize_images(images, [32, 32])
 
+    else:
+        dataset_mnist, dataset_mnist_m = get_dataset(dataset_name, split_name, dataset_dir, labels_one=labels_one, labels_two=labels_two)
+        dataset = dataset_mnist.concatenate(dataset_mnist_m)
+        image, label = provide_batch_mix(dataset)
+        image -= 0.5
+        image *= 2
+
+        labels = {}
+        dataset = dataset.batch(batch_size, False)
+        images, labels['classes'] = tf.train.batch(
+            [image, label],
+            batch_size=batch_size,
+            num_threads=num_preprocessing_threads,
+            capacity=5 * batch_size)
+        labels['classes'] = slim.one_hot_encoding(labels['classes'],
+                                                  10)
+        # with tf.Session() as sess:
+        #     a, b = provide_batch_mix(dataset)
+        #     c, d = sess.run([a, b])
+        #     print(c.shape)
+        #     print(d.shape)
     return images, labels
 
+def provide_batch_mix(dataset):
+    iterator = dataset.make_one_shot_iterator()
+    image_batch, label_batch = iterator.get_next()
 
-def provided_batch(dataset_name, split_name, dataset_dir, num_readers,
-                  batch_size, num_preprocessing_threads, num_classes=None):
+    return image_batch, label_batch
 
-    dataset = get_dataset(dataset_name, split_name, dataset_dir, num_classes)
-
-    return 0
