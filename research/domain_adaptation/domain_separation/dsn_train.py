@@ -73,7 +73,7 @@ tf.app.flags.DEFINE_float(
     'The coefficient for the L2 regularization applied for all weights.')
 
 tf.app.flags.DEFINE_integer(
-    'save_summaries_secs', 60,
+    'save_summaries_secs', 15,
     'The frequency with which summaries are saved, in seconds.')
 
 tf.app.flags.DEFINE_integer(
@@ -177,11 +177,11 @@ def main(_):
                 source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed.get_class_labels(
                     FLAGS.num_classes)
                 source_images, source_labels = provide_batch_fn()(
-                    'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.source_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
                     FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=source_mnist_labels,
                     labels_two=source_mnist_m_labels)
                 target_images, target_labels = provide_batch_fn()(
-                    'mixed', 'train', FLAGS.dataset_dir, FLAGS.num_readers,
+                    FLAGS.target_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
                     FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=target_mnist_labels,
                     labels_two=target_mnist_m_labels)
 
@@ -255,8 +255,8 @@ def main(_):
                     source_labels['quaternions'] = source_pose_labels
 
             slim.get_or_create_global_step()
-            tf.summary.image('source_images', source_images, max_outputs=3)
-            tf.summary.image('target_images', target_images, max_outputs=3)
+            tf.summary.image('source_images', source_images, max_outputs=10)
+            tf.summary.image('target_images', target_images, max_outputs=10)
 
             dsn.create_model(
                 source_images,
@@ -301,15 +301,15 @@ def main(_):
 if __name__ == '__main__':
     FLAGS.similarity_loss = 'dann_loss'
     FLAGS.basic_tower = 'dann_mnist'
-    FLAGS.source_dataset = 'mnist'
-    FLAGS.target_dataset = 'mnist_m'
+    FLAGS.source_dataset = 'mixed'
+    FLAGS.target_dataset = 'mixed'
     FLAGS.learning_rate = 0.0117249
     FLAGS.gamma_weight = 0.251175
     FLAGS.weight_decay = 1e-6
     FLAGS.layers_to_regularize = 'fc3'
     FLAGS.master = ''
     FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
-    FLAGS.max_number_of_steps = 5000
+    FLAGS.max_number_of_steps = 300
     FLAGS.num_classes = 6
 
     tf.app.run()

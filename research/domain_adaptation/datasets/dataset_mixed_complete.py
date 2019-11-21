@@ -14,11 +14,16 @@ import numpy as np
 slim = tf.contrib.slim
 from research.domain_adaptation.datasets import mixed
 import matplotlib.pyplot as plt
+from research.domain_adaptation.datasets import dataset_factory as fac
 
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string(
     'dataset_dir', None,
+    'The directory where the output TFRecords and temporary files are saved.')
+
+tf.app.flags.DEFINE_string(
+    'source_dataset', None,
     'The directory where the output TFRecords and temporary files are saved.')
 
 # The names of the classes.
@@ -47,12 +52,6 @@ def _get_output_filename(dataset_dir, split_name):
       An absolute file path.
     """
     return '%s/mnist_mix_%s.tfrecord' % (dataset_dir, split_name)
-
-
-def run(dataset_dir):
-    pull_these_numbers(dataset_dir)
-
-    return 0
 
 
 def decode(serialized_example):
@@ -94,7 +93,7 @@ def decode(serialized_example):
 def pull_these_numbers(dataset_dir):
     tf.enable_eager_execution()
 
-    filename = os.path.join(dataset_dir, 'mnist_m_train_1.tfrecord')
+    # filename = os.path.join(dataset_dir, 'mnist_m_train_1.tfrecord')
     labels1, labels2, labels3, labels4 = mixed.get_class_labels(5)
     file_list = mixed.get_file_list(dataset_dir, file_pattern=None, split_name='test', labels_mnist=labels1,
                                     labels_mnist_m=labels2)
@@ -129,12 +128,58 @@ def pull_these_numbers(dataset_dir):
         print(label.numpy())
 
 
+def test_dataset(dataset_dir):
+
+    source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed.get_class_labels(
+        7)
+    mnist, mnist_m = fac.get_dataset('mixed', 'train', dataset_dir, labels_one=source_mnist_labels,
+                    labels_two=source_mnist_m_labels)
+    mnist = mnist.shuffle(20000)
+    mnist_m = mnist_m.shuffle(20000)
+    # print('mnist')
+    # for tensor in mnist.take(5):
+    #     image = tensor[0].numpy()
+    #     label = tensor[1].numpy()
+    #     plt.imshow(image)
+    #     plt.show()
+    #     print(image)
+    #     print(label)
+    #
+    # print('mnist-m')
+    # for tensor in mnist_m.take(5):
+    #     image = tensor[0].numpy()
+    #     label = tensor[1].numpy()
+    #     plt.imshow(image)
+    #     plt.show()
+    #     print(image)
+    #     print(label)
+
+    dataset = mnist.concatenate(mnist_m)
+
+    dataset = dataset.shuffle(1000000)
+    print('mixed')
+    for tensor in dataset.take(10):
+        image = tensor[0].numpy()
+        label = tensor[1].numpy()
+        plt.imshow(image)
+        plt.show()
+        print(label)
+
+    return 0
+
+
+def run(dataset_dir):
+    # pull_these_numbers(dataset_dir)
+    test_dataset(dataset_dir)
+    return 0
+
+
 def main(_):
+    FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
+    FLAGS.source_dataset = 'mixed'
     assert FLAGS.dataset_dir
 
-    # FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
     run(FLAGS.dataset_dir)
-
 
 
 if __name__ == '__main__':

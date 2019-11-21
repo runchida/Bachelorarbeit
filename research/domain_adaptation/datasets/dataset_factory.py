@@ -59,7 +59,7 @@ def get_dataset(dataset_name,
                                                               file_pattern, reader)
 
 def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
-                  batch_size, num_preprocessing_threads, labels_one=None, labels_two=None):
+                  batch_size, num_preprocessing_threads, labels_one=None, labels_two=None, testtarget=False):
     """Provides a batch of images and corresponding labels.
 
       Args:
@@ -111,14 +111,22 @@ def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
             images = tf.image.resize_images(images, [32, 32])
 
     else:
+        # TODO fill batch with half source/half target
         dataset_mnist, dataset_mnist_m = get_dataset(dataset_name, split_name, dataset_dir, labels_one=labels_one, labels_two=labels_two)
+        # if testtarget == True:
+        #     dataset = dataset_mnist_m
+        # else:
+        #     dataset= dataset_mnist
+        dataset_mnist = dataset_mnist.shuffle(100000)
+        dataset_mnist_m = dataset_mnist_m.shuffle(100000)
         dataset = dataset_mnist.concatenate(dataset_mnist_m)
+        dataset = dataset.shuffle(100000)
         image, label = provide_batch_mix(dataset)
         image -= 0.5
         image *= 2
 
         labels = {}
-        dataset = dataset.batch(batch_size, False)
+        #dataset = dataset.batch(batch_size)
         images, labels['classes'] = tf.train.batch(
             [image, label],
             batch_size=batch_size,
@@ -126,11 +134,7 @@ def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
             capacity=5 * batch_size)
         labels['classes'] = slim.one_hot_encoding(labels['classes'],
                                                   10)
-        # with tf.Session() as sess:
-        #     a, b = provide_batch_mix(dataset)
-        #     c, d = sess.run([a, b])
-        #     print(c.shape)
-        #     print(d.shape)
+
     return images, labels
 
 def provide_batch_mix(dataset):

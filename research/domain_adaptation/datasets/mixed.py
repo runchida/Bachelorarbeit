@@ -28,9 +28,10 @@ _ITEMS_TO_DESCRIPTIONS_MNIST_M = {
     'label': 'A single integer between 0 and 9',
 }
 
+
 def get_split(split_name, dataset_dir, labels_one, labels_two, file_pattern=None):
     # get tf.data.Dataset
-
+    # tf.enable_eager_execution()
     if split_name not in _SPLITS_TO_SIZES:
         raise ValueError('split name %s was not recognized.' % split_name)
 
@@ -124,12 +125,13 @@ def decode_gray(serialized_example):
     image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
     label = tf.cast(parsed_dataset['image/class/label'], tf.uint8)
 
+    image = tf.image.convert_image_dtype(image, tf.float32)
     image = tf.image.grayscale_to_rgb(image)
     image = tf.image.resize_images(image, [32, 32])
-    image = tf.image.convert_image_dtype(image, tf.float32)
     label = tf.reshape(label, shape=[])
 
     return image, label
+
 
 def decode_rgb(serialized_example):
     """
@@ -154,8 +156,8 @@ def decode_rgb(serialized_example):
     image = tf.io.decode_png(parsed_dataset['image/encoded'], channels=0, dtype=tf.uint8)
     label = tf.cast(parsed_dataset['image/class/label'], tf.uint8)
 
-    image = tf.image.resize_images(image, [32, 32])
     image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.image.resize_images(image, [32, 32])
     image = tf.reshape(image, [32, 32, 3])
     label = tf.reshape(label, shape=[])
 
