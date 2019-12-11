@@ -187,6 +187,8 @@ def dann_loss(source_samples, target_samples, weight, scope=None):
     tf.summary.scalar(tag_loss, domain_loss)
     tf.summary.scalar(tag_accuracy, domain_accuracy)
 
+  print('domain loss: ', domain_loss)
+
   return domain_loss
 
 
@@ -217,6 +219,7 @@ def difference_loss(private_samples, shared_samples, weight=1.0, name=''):
   tf.summary.scalar('losses/Difference Loss {}'.format(name),
                                        cost)
   assert_op = tf.Assert(tf.is_finite(cost), [cost])
+  print('Different losses %s: ' %name,  cost)
   with tf.control_dependencies([assert_op]):
     tf.losses.add_loss(cost)
 

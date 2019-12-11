@@ -21,7 +21,6 @@ import tensorflow as tf
 from research.domain_adaptation.datasets import dataset_factory
 from research.domain_adaptation.domain_separation import dsn
 from research.domain_adaptation.datasets import mixed
-from tutorials.rnn.quickdraw.train_model import get_num_classes
 
 slim = tf.contrib.slim
 FLAGS = tf.app.flags.FLAGS
@@ -73,7 +72,7 @@ tf.app.flags.DEFINE_float(
     'The coefficient for the L2 regularization applied for all weights.')
 
 tf.app.flags.DEFINE_integer(
-    'save_summaries_secs', 15,
+    'save_summaries_secs', 60,
     'The frequency with which summaries are saved, in seconds.')
 
 tf.app.flags.DEFINE_integer(
@@ -129,6 +128,9 @@ tf.app.flags.DEFINE_integer(
     'num_classes', None,
     'Number of classes in mnist, mnist-m')
 
+tf.app.flags.DEFINE_string(
+    'training_name', None, 'Name of the training scenario')
+
 ################################################################################
 # Flags that control the architecture and losses
 ################################################################################
@@ -172,10 +174,21 @@ def main(_):
     g = tf.Graph()
     with g.as_default():
         with tf.device(tf.train.replica_device_setter(FLAGS.ps_tasks)):
+            FLAGS.train_log_dir, retrain = mixed.get_train_log_dir(FLAGS.training_name)
 
+            # mixed domains scenario
             if FLAGS.source_dataset == 'mixed':
-                source_mnist_labels, source_mnist_m_labels, target_mnist_labels, target_mnist_m_labels = mixed.get_class_labels(
-                    FLAGS.num_classes)
+                if retrain == False:
+                    labels = mixed.get_class_labels(FLAGS.num_classes)
+                    mixed.write_label(FLAGS.train_log_dir, labels)
+                else:
+                    labels = mixed.read_mixed_labels(FLAGS.train_log_dir)
+
+                source_mnist_labels = labels['labels1']
+                source_mnist_m_labels = labels['labels2']
+                target_mnist_labels = labels['labels2']
+                target_mnist_m_labels = labels['labels1']
+
                 source_images, source_labels = provide_batch_fn()(
                     FLAGS.source_dataset, 'train', FLAGS.dataset_dir, FLAGS.num_readers,
                     FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=source_mnist_labels,
@@ -185,6 +198,7 @@ def main(_):
                     FLAGS.batch_size, FLAGS.num_preprocessing_threads, labels_one=target_mnist_labels,
                     labels_two=target_mnist_m_labels)
 
+            # standard scenario
             else:
                 # Load the data.
                 source_images, source_labels = provide_batch_fn()(
@@ -304,12 +318,16 @@ if __name__ == '__main__':
     FLAGS.source_dataset = 'mixed'
     FLAGS.target_dataset = 'mixed'
     FLAGS.learning_rate = 0.0117249
+    FLAGS.alpha_weight = 0.01
+    FLAGS.beta_weight = 0.05
     FLAGS.gamma_weight = 0.251175
     FLAGS.weight_decay = 1e-6
     FLAGS.layers_to_regularize = 'fc3'
     FLAGS.master = ''
     FLAGS.dataset_dir = '/home/runchi/thesis/datasets'
-    FLAGS.max_number_of_steps = 300
-    FLAGS.num_classes = 6
+    FLAGS.max_number_of_steps = 3004157
+    FLAGS.num_classes = 1
+    FLAGS.use_separation = True
+    FLAGS.training_name = 'test1'
 
     tf.app.run()

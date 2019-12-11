@@ -22,7 +22,7 @@ import numpy as np
 from six.moves import xrange
 import tensorflow as tf
 
-from research.domain_adaptation.datasets import dataset_factory
+from research.domain_adaptation.datasets import dataset_factory, mixed
 from research.domain_adaptation.domain_separation import losses
 from research.domain_adaptation.domain_separation import models
 
@@ -63,6 +63,9 @@ tf.app.flags.DEFINE_bool('enable_precision_recall', False,
 
 tf.app.flags.DEFINE_bool('use_logging', False, 'Debugging messages.')
 
+tf.app.flags.DEFINE_string(
+    'training_name', None, 'Name of the training scenario')
+
 
 def quaternion_metric(predictions, labels):
     params = {'batch_size': FLAGS.batch_size, 'use_logging': False}
@@ -86,12 +89,21 @@ def main(_):
     g = tf.Graph()
     with g.as_default():
         # Load the data.
-        images, labels = provide_batch_fn()(
-            FLAGS.dataset, FLAGS.split, FLAGS.dataset_dir, 4, FLAGS.batch_size, 4)
+        FLAGS.checkpoint_dir, retrain = mixed.get_train_log_dir(FLAGS.training_name)
+        if FLAGS.dataset == 'mixed':
+            labels = mixed.read_mixed_labels(FLAGS.checkpoint_dir)
+            target_mnist_labels = labels['labels2']
+            target_mnist_m_labels = labels['labels1']
+            images, labels = provide_batch_fn()(
+                FLAGS.dataset, FLAGS.split, FLAGS.dataset_dir, 4, FLAGS.batch_size, 4, labels_one=target_mnist_labels,
+                    labels_two=target_mnist_m_labels)
+        else:
+            images, labels = provide_batch_fn()(
+                FLAGS.dataset, FLAGS.split, FLAGS.dataset_dir, 4, FLAGS.batch_size, 4)
 
         num_classes = labels['classes'].get_shape().as_list()[1]
 
-        tf.summary.image('eval_images', images, max_outputs=3)
+        tf.summary.image('eval_images', images, max_outputs=10)
 
         # Define the model:
         with tf.variable_scope('towers'):

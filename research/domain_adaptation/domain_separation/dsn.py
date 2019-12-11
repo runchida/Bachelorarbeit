@@ -175,6 +175,7 @@ def add_reconstruction_loss(recon_loss_name, images, recons, weight, domain):
 
     loss = loss_fn(recons, images, weight)
     assert_op = tf.Assert(tf.is_finite(loss), [loss])
+    print('Reconstruction loss : ', loss)
     with tf.control_dependencies([assert_op]):
         tf.summary.scalar('losses/%s Recon Loss' % domain, loss)
 
@@ -279,18 +280,32 @@ def add_autoencoders(source_data, source_shared, target_data, target_shared,
                             recon_loss_weight, 'target')
 
     # Add summaries
+    source_values = list(map(normalize_images, [
+        source_data, source_recons, source_shared_recons,
+        source_private_recons]))
+    target_values = list(map(normalize_images, [
+        target_data, target_recons, target_shared_recons,
+        target_private_recons]))
+
     source_reconstructions = tf.concat(
         axis=2,
-        values=map(normalize_images, [
-            source_data, source_recons, source_shared_recons,
-            source_private_recons
-        ]))
+        values=source_values)
     target_reconstructions = tf.concat(
         axis=2,
-        values=map(normalize_images, [
-            target_data, target_recons, target_shared_recons,
-            target_private_recons
-        ]))
+        values=target_values)
+
+    # source_reconstructions = tf.concat(
+    #     axis=2,
+    #     values=map(normalize_images, [
+    #         source_data, source_recons, source_shared_recons,
+    #         source_private_recons
+    #     ]))
+    # target_reconstructions = tf.concat(
+    #     axis=2,
+    #     values=map(normalize_images, [
+    #         target_data, target_recons, target_shared_recons,
+    #         target_private_recons
+    #     ]))
     tf.summary.image(
         'Source Images:Recons:RGB',
         source_reconstructions[:, :, :, :3],
@@ -350,4 +365,5 @@ def add_task_loss(source_images, source_labels, basic_tower, params):
         source_labels['classes'], source_logits)
 
     tf.summary.scalar('losses/classification_loss', classification_loss)
+    print('Classification loss:', classification_loss)
     return source_endpoints

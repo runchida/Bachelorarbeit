@@ -170,26 +170,34 @@ def get_class_labels(num_classes):
     if num_classes < 5:
         raise ValueError('Number of classes must be between 5 to 10')
 
-    class_labels_one = []
-    fill_list(class_labels_one, num_classes)
+    class_labels_source_one = []
+    fill_list(class_labels_source_one, num_classes)
 
     # labels two
-    class_labels_two = []
+    class_labels_source_two = []
     class_labels_target_one = []
     for x in range(0, 10):
-        append = not (has_number(class_labels_one, x))
+        append = not (has_number(class_labels_source_one, x))
         if append:
-            class_labels_two.append(x)
+            class_labels_source_two.append(x)
             class_labels_target_one.append(x)
-    fill_list(class_labels_two, num_classes)
+    fill_list(class_labels_source_two, num_classes)
 
     class_labels_target_two = []
     for x in range(0, 10):
-        append = not (has_number(class_labels_two, x))
+        append = not (has_number(class_labels_source_two, x))
         if append:
             class_labels_target_two.append(x)
 
-    return class_labels_one, class_labels_two, class_labels_target_one, class_labels_target_two
+    class_labels_target_one = class_labels_source_two
+    class_labels_target_two = class_labels_source_one
+
+    labels = {
+        'labels1': class_labels_source_one,
+        'labels2': class_labels_source_two
+    }
+
+    return labels
 
 
 def fill_list(list, num_classes):
@@ -232,3 +240,22 @@ def get_file_list(dataset_dir, file_pattern, split_name, labels_mnist, labels_mn
 
     else:
         return file_pattern
+
+
+def get_train_log_dir(training_name):
+    experiment_dir = os.path.join('/home', 'runchi', 'thesis', 'graphs', 'experiment')
+    train_log_dir = os.path.join(experiment_dir, '%s/' % training_name)
+    if not tf.gfile.Exists(train_log_dir):
+        tf.gfile.MkDir(train_log_dir)
+        retrain = False
+    else:
+        retrain = True
+    return train_log_dir, retrain
+
+
+def write_label(train_log_dir, labels):
+    dataset_utils.write_mixed_labels(train_log_dir, labels)
+
+
+def read_mixed_labels(train_log_dir):
+    return dataset_utils.read_mixed_labels(train_log_dir)
