@@ -175,26 +175,25 @@ def get_class_labels(num_classes):
 
     # labels two
     class_labels_source_two = []
-    class_labels_target_one = []
+    class_labels_test_one = []
     for x in range(0, 10):
         append = not (has_number(class_labels_source_one, x))
         if append:
             class_labels_source_two.append(x)
-            class_labels_target_one.append(x)
+            class_labels_test_one.append(x)
     fill_list(class_labels_source_two, num_classes)
 
-    class_labels_target_two = []
+    class_labels_test_two = []
     for x in range(0, 10):
         append = not (has_number(class_labels_source_two, x))
         if append:
-            class_labels_target_two.append(x)
-
-    class_labels_target_one = class_labels_source_two
-    class_labels_target_two = class_labels_source_one
+            class_labels_test_two.append(x)
 
     labels = {
         'labels1': class_labels_source_one,
-        'labels2': class_labels_source_two
+        'labels2': class_labels_source_two,
+        'labels3': class_labels_test_one,
+        'labels4': class_labels_test_two
     }
 
     return labels
@@ -243,7 +242,8 @@ def get_file_list(dataset_dir, file_pattern, split_name, labels_mnist, labels_mn
 
 
 def get_train_log_dir(training_name):
-    experiment_dir = os.path.join('/home', 'runchi', 'thesis', 'graphs', 'experiment')
+    # experiment_dir = os.path.join('/home', 'runchi', 'thesis', 'graphs', 'experiment')
+    experiment_dir = os.path.join('/home', 'rk64vona', 'thesis', 'graphs', 'experiment')
     train_log_dir = os.path.join(experiment_dir, '%s/' % training_name)
     if not tf.gfile.Exists(train_log_dir):
         tf.gfile.MkDir(train_log_dir)

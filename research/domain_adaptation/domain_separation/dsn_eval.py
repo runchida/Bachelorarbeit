@@ -84,7 +84,7 @@ def provide_batch_fn():
     """ The provide_batch function to use. """
     return dataset_factory.provide_batch
 
-
+# TODO test nur auf unseen
 def main(_):
     g = tf.Graph()
     with g.as_default():
