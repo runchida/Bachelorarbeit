@@ -92,8 +92,8 @@ def main(_):
         FLAGS.checkpoint_dir, retrain = mixed.get_train_log_dir(FLAGS.training_name)
         if FLAGS.dataset == 'mixed':
             labels = mixed.read_mixed_labels(FLAGS.checkpoint_dir)
-            target_mnist_labels = labels['labels2']
-            target_mnist_m_labels = labels['labels1']
+            target_mnist_labels = labels['labels3']
+            target_mnist_m_labels = labels['labels4']
             images, labels = provide_batch_fn()(
                 FLAGS.dataset, FLAGS.split, FLAGS.dataset_dir, 4, FLAGS.batch_size, 4, labels_one=target_mnist_labels,
                     labels_two=target_mnist_m_labels)

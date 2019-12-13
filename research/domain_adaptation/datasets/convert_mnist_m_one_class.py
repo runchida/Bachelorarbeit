@@ -236,7 +236,7 @@ def run(dataset_dir, class_to_convert):
 def main(_):
 
     assert FLAGS.dataset_dir
-    FLAGS.class_to_convert = 0
+    # FLAGS.class_to_convert = 0
     run(FLAGS.dataset_dir, FLAGS.class_to_convert)
 
 
