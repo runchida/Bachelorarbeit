@@ -66,6 +66,8 @@ tf.app.flags.DEFINE_bool('use_logging', False, 'Debugging messages.')
 tf.app.flags.DEFINE_string(
     'training_name', None, 'Name of the training scenario')
 
+tf.app.flags.DEFINE_string(
+    'checkpoint', None, 'checkpoint number to be evaluated')
 
 def quaternion_metric(predictions, labels):
     params = {'batch_size': FLAGS.batch_size, 'use_logging': False}
@@ -84,7 +86,7 @@ def provide_batch_fn():
     """ The provide_batch function to use. """
     return dataset_factory.provide_batch
 
-# TODO test nur auf unseen
+
 def main(_):
     g = tf.Graph()
     with g.as_default():
@@ -163,14 +165,27 @@ def main(_):
 
         # Setup the global step.
         slim.get_or_create_global_step()
-        slim.evaluation.evaluation_loop(
-            FLAGS.master,
-            checkpoint_dir=FLAGS.checkpoint_dir,
-            logdir=FLAGS.eval_dir,
-            num_evals=num_batches,
-            summary_op=tf.summary.merge(summary_ops),
-            eval_op=list(names_to_updates.values())
-        )
+
+        if FLAGS.checkpoint is None:
+            slim.evaluation.evaluation_loop(
+                FLAGS.master,
+                checkpoint_dir=FLAGS.checkpoint_dir,
+                logdir=FLAGS.eval_dir,
+                num_evals=num_batches,
+                summary_op=tf.summary.merge(summary_ops),
+                eval_op=list(names_to_updates.values())
+            )
+
+        else:
+            checkpoint_path = FLAGS.checkpoint_dir + 'model.ckpt-' + FLAGS.checkpoint
+            slim.evaluation.evaluate_once(
+                FLAGS.master,
+                checkpoint_path=checkpoint_path,
+                logdir=FLAGS.eval_dir,
+                num_evals=num_batches,
+                summary_op=tf.summary.merge(summary_ops),
+                eval_op=list(names_to_updates.values())
+            )
 
 
 

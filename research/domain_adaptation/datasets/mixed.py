@@ -242,8 +242,8 @@ def get_file_list(dataset_dir, file_pattern, split_name, labels_mnist, labels_mn
 
 
 def get_train_log_dir(training_name):
-    # experiment_dir = os.path.join('/home', 'runchi', 'thesis', 'graphs', 'experiment')
-    experiment_dir = os.path.join('/home', 'rk64vona', 'thesis', 'graphs', 'experiment')
+    experiment_dir = os.path.join('/home', 'runchi', 'thesis', 'graphs', 'experiment')
+    # experiment_dir = os.path.join('/home', 'rk64vona', 'thesis', 'graphs', 'experiment')
     train_log_dir = os.path.join(experiment_dir, '%s/' % training_name)
     if not tf.gfile.Exists(train_log_dir):
         tf.gfile.MkDir(train_log_dir)
