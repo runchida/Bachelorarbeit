@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+		[scale=1.3,>=stealth',thick]
+	
+		% A: zentral
+		\begin{scope}[xshift=-3cm]
+			\node[block] (agent01a) at ( 0, 1) {Agent 1, zentrale Instanz};
+			\node[smallblock] (agent02a) at (-2,-1) {Agent 2};
+			\node[smallblock] (agent03a) at ( 0,-1) {Agent 3};
+			\node[smallblock] (agent04a) at ( 2,-1) {Agent 4};
+%			\draw (0,-2) node {zentrale Kommunikation};
+	
+			\draw [-] (agent01a) to (agent02a);
+			\draw [-] (agent01a) to (agent03a);
+			\draw [-] (agent01a) to (agent04a);
+		\end{scope}
+		
+		% B: dezentral
+		\begin{scope}[xshift=3cm]
+			\node[smallblock] (agent01b) at ( 0, 1) {Agent 1};
+			\node[smallblock] (agent02b) at (-1.5, 0) {Agent 2};
+			\node[smallblock] (agent03b) at ( 0,-1) {Agent 3};
+			\node[smallblock] (agent04b) at ( 1.5, 0) {Agent 4};
+%			\draw (0,-2) node {dezentrale Kommunikation};
+	
+			\draw [-] (agent01b) to (agent02b);
+			\draw [-] (agent01b) to (agent03b);
+			\draw [-] (agent01b) to (agent04b);
+			\draw [-] (agent02b) to (agent03b);
+			\draw [-] (agent02b) to (agent04b);
+			\draw [-] (agent03b) to (agent04b);
+		\end{scope}
+
+\end{tikzpicture}

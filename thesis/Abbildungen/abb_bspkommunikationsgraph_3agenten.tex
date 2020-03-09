@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+		[scale=1.5,>=stealth',thick]
+	
+		\node[graphnode] (knoten01) at ( 0,1) {1};
+		\node[graphnode] (knoten02) at (-0.7,0) {2};
+		\node[graphnode] (knoten03) at ( 0.7,0) {3};
+	
+		\draw [<->]  (knoten01) to (knoten02);
+		\draw [->]  (knoten02) to (knoten03);
+		\draw [->]  (knoten03) to (knoten01);
+
+\end{tikzpicture}

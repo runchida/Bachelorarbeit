@@ -1,0 +1,198 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header-Datei zur Erstellung einer BaMa am Fachgebiet rmr %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Diese Datei definiert alle wichtigen Sachen, so dass sich die Studenten nur noch mit dem Schreiben der Arbeit beschäftigen können, wenn diese Datei genutzt wird. Die Nutzung ist natürlich keine Pflicht aber empfohlen!
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------- Pakete ------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Schrift & Sprache
+\usepackage[T1]{fontenc}			% Darstellung von Schrift als echte T1 Fonts und nicht als Bilder
+\usepackage{lmodern}				% hübsche Schrift, kein Pixelmatsch
+
+% Layout & Struktur
+\usepackage[automark,autooneside]{scrpage2}	% KOMA-Paket für Seitenlayout
+\usepackage{calc}					% Satzspiegelberechnung (Texthöhe zu Textbreite usw.)
+\usepackage[numbers]{natbib}
+\usepackage[small]{caption}
+\usepackage{float}
+\usepackage{nomencl}
+\usepackage{lscape}
+\usepackage{textcomp}
+
+% Mathematik & Formeln
+\usepackage{amsmath}				% Mathematik-Umgebungen
+\usepackage{amssymb}				% spezielle Mathe-Symbole
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bm}						% fette Mathe Buchstaben
+\usepackage{delarray}
+\usepackage{dsfont}					% spezielle Mathe-Buchstaben (z.B. Mengenzeichen)
+\usepackage{bbm}					% weitere spezielle Mathe-Buchstaben (z.B. Mengenzeichen)
+\usepackage{algorithmic}
+\usepackage{empheq}
+\usepackage{commath}				% nützliche Mathe-Makros
+
+% Grafiken & Farbe
+\usepackage{graphicx}				% zum einbinden von Grafiken
+\usepackage{xcolor}					% für Farben und Farbdefinitionen
+\usepackage{tikz,pgfplots}
+\usetikzlibrary{arrows,fit,backgrounds,shapes.arrows,decorations.pathmorphing}
+%\usepackage{psfrag}				% zum Verändern / Ersetzen von Text in Grafiken
+%\usepackage{pstricks}				% Zeichnen mit LaTeX
+%\usepackage{thmbox}
+%\usepackage{shadethm}
+%\usepackage{enumitem}
+
+% Hyperlinks im PDF
+\usepackage[
+			colorlinks,     	% farbige Links
+            linkcolor=black,	% allg. Linkfarbe
+            citecolor=black,	% Farbe für Literaturstellen
+            urlcolor=black,		% Farbe für Websites
+            linktocpage,        % nur die Seite des Inhaltsverzeichnis wird verlinkt
+            bookmarksopen]      % Lesezeichen im Adobe Reader auf für alle Kapitel, Unterkapitel usw.
+	{hyperref}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%=========== KOMA Befehle (Layout) ==============
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{scrheadings}                             	% KOMA-Headings benutzen
+\clearscrheadfoot                           			% alle Felder im Kopf und Fuß löschen
+\renewcommand{\headfont}{\normalfont\small\sffamily\bfseries}
+\renewcommand{\pnumfont}{\normalfont\small\sffamily\bfseries }	
+\renewcommand*{\chaptermarkformat}{\thechapter\autodot\enskip}	% kein chapterprefix in der Kopfzeile
+\automark[section]{section}                         	% aktuelle section als Kolumnentitel
+\lohead{\headmark}                                  	% links oben steht dieser Kolumnentitel, auf ungeraden Seiten
+\lehead{\pagemark}                                  	% links oben Seitenzahl auf geraden Seiten
+\cfoot[\pagemark]{}										% Seitennummer unten zentriert, wenn keine Kolumnentitel
+\rehead{\headmark}										% rechts oben steht der Kolumnentitel, auf geraden Seiten
+\rohead{\pagemark}										% rechts oben Seitenzahl auf ungeraden Seiten
+\setheadsepline{0.5pt}                              	% Trennlinie zwischen Kopfzeile und Text mit 0.5pt Dicke
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------Pfad für die Logos-----------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{{./logos/}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%---------- Titel ------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{rmrGruen}{rgb}{0.6,0.753,0}	% rmr-Grün (hier aber nicht benutzt)
+
+\titlehead{ % Kopf der Titelseite
+	\vspace{-2cm}
+	\parbox[b]{80mm}{\huge\sffamily\bfseries \BaMaType}
+	\hfill
+	\parbox[b]{90mm}{\includegraphics[scale=0.35]{TUD}}\vspace{0.15cm}
+	\rule{\textwidth}{2pt} }
+ 
+\subject{\vspace{30mm}}	% Betreff der Titelseite (hier leer)
+
+\title{\BaMaTitle} % Titel der Arbeit
+
+\author{\BaMaAuthor\\[6pt]\BaMaProgramme} % Autor der Arbeit + Studiengang
+
+\date{ \vspace{\baselineskip}\BaMaFinishDate\vspace{40mm}} % Einreichungsdatum der Arbeit
+
+\publishers{ % Fuß der Titelseite
+	\rule{\textwidth}{2pt}\\[0.5\baselineskip]
+	\parbox[b]{75mm}{\sffamily \SupervisorString{}: \\ \BaMaSupervisor}
+	\hfill
+	\parbox[b]{68mm}{\includegraphics[scale=1.5]{rmr}\\ \raggedleft\textsf{Prof. Dr.-Ing. J. Adamy}}
+	\vspace{-30mm}}
+
+\dedication{ % Selbständigkeitserklärung
+	\normalfont\normalsize\thispagestyle{plain}
+	\begin{minipage}[t][0.95\textheight][t]{\textwidth}
+		{\huge\bfseries\sffamily Eidesstattliche Erklärung}\\[0.2\baselineskip]
+		{\small\bfseries\sffamily Erklärung zur Abschlussarbeit gemäß § 22 Abs. 7 und § 23 Abs. 7 APB TU Darmstadt} \\[0.5\baselineskip]
+		
+		Hiermit versichere ich, \BaMaAuthor{}, die vorliegende \BaMaType{} gemäß § 22 Abs.~7 APB der TU Darmstadt ohne Hilfe Dritter und nur mit den angegebenen Quellen und Hilfsmitteln angefertigt zu haben. Alle Stellen, die Quellen entnommen wurden, sind als solche kenntlich gemacht worden. Diese Arbeit hat in gleicher oder ähnlicher Form noch keiner Prüfungsbehörde vorgelegen.
+		Mir ist bekannt, dass im Falle eines Plagiats (§38 Abs.~2 APB) ein Täuschungsversuch vorliegt, der dazu führt, dass die Arbeit mit 5{,}0 bewertet und damit ein Prüfungsversuch verbraucht wird. Abschlussarbeiten dürfen nur einmal wiederholt werden.
+		
+		Bei der abgegebenen Thesis stimmen die schriftliche und die zur Archivierung eingereichte elektronische Fassung gemäß § 23 Abs. 7 APB überein.\\[1.5\baselineskip]
+		\noindent Darmstadt, \BaMaFinishDate   \\[2\baselineskip]
+		\noindent \BaMaAuthor
+
+		\EEoptionalTranlation
+	\end{minipage}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------- Umgebungen -------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Umgebung zum Setzen des Abstract und der Zusammenfassung
+\newenvironment{BaMaAbstract}[2]{
+	\thispagestyle{plain}
+	\begin{minipage}[c][\textheight][c]{\textwidth}
+	\begin{center}\huge\bfseries\sffamily
+		Abstract
+	\end{center}
+	\normalfont
+	#1
+	\\[0.1\baselineskip]
+	\begin{center}
+	\rule{0.5\textwidth}{0.5pt}
+	\end{center}
+	\begin{center}\huge\bfseries\sffamily
+		Zusammenfassung
+	\end{center}
+	\normalfont
+	#2
+}{
+	\end{minipage}\newpage
+}
+
+
+% Umgebung zum Setzen der Danksagung
+\newenvironment{BaMaAcknowledgements}[1]{ 
+	\cleardoublepage
+	\thispagestyle{plain}
+	\begin{minipage}[c][\textheight][t]{\textwidth}
+	 {\noindent\huge\bfseries\sffamily \AcknowledgementString}\\[\baselineskip]
+	 \normalfont
+	 #1
+	 \\[1\baselineskip]
+	 \noindent\BaMaAuthor
+}{
+	\end{minipage}\newpage
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Anpassung Abkürzungsverzeichnis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Befehl umbenennen in \abk
+\let\abk\nomenclature
+
+% Überschriften anpassen
+\renewcommand{\nomname}{Verzeichnis der verwendeten Abkürzungen und Formelzeichen}
+\RequirePackage{ifthen}
+\renewcommand{\nomgroup}[1]{%
+	\ifthenelse{\equal{#1}{A}}{\item[\textbf{Abkürzungen}]}{%
+		\ifthenelse{\equal{#1}{F}}{\bigskip\item[\textbf{Formelzeichen}]}{}}{}}
+
+% Formatierung Abkürzungsverzeichnis anpassen
+\setlength{\nomlabelwidth}{.15\hsize} % Abstand zw. Abkürzung und Erklärung anpassen
+%\setlength{\nomitemsep}{-3.5pt} % Zeilenabstände verkleinern
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Konfiguration Float-Platzierung
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dies Parameter steuern die Platzierung von figure, table, usw.
+% Falls nötig aktivieren und anpassen. Das ist oft besser als die Platzierung zu erzwingen.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\renewcommand{\topfraction}{0.5}     % maximaler Platzanteil im oberen Teil einer Seite für Floats
+%\renewcommand{\bottomfraction}{0.5}  % maximaler Platzanteil im untern Teil einer Seite für Floats
+%\renewcommand{\textfraction}{0.5}    % minimaler Platzanteil für Text
+%\setcounter{topnumber}{2}            % maximale Anzahl an Floats im oberen Teil einer Seite
+%\setcounter{bottomnumber}{2}         % maximale Anzahl an Floats im unteren Teil einer Seite
+%\setcounter{totalnumber}{3}          % maximale Anzahl an Floats auf einer Seite insgesamt

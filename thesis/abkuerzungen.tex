@@ -1,0 +1,141 @@
+%%% Format
+% 1. Hauptgruppe
+%    A - Abkürzungen
+%    F - Formelzeichen
+%
+% 2. Untergruppen
+%    a - Skalar
+%    b - Vektoren
+%    c - Matrizen
+%    d - Mengen
+%    e - Funktionen
+%    f - mathematische Ausdrücke
+%    
+
+
+%%%%%%%%%%%%%%%%%%%
+%%% Abkürzungen %%%
+%%%%%%%%%%%%%%%%%%%
+\abk[Aa ]{ADV}{Dynamische Ausgangssynchronisierung mit vollständigem Beobachter}
+\abk[Aa ]{ADR}{Dynamische Ausgangssynchronisierung mit reduziertem Beobachter}
+\abk[Aa ]{ASR}{Quasi-statische Ausgangssynchronisierung mit reduziertem Beobachter}
+\abk[Aa ]{ASV}{Quasi-statische Ausgangssynchronisierung mit vollständigem Beobachter}
+\abk[Aa ]{ZD}{Dynamische Zustandssynchronisierung}
+\abk[Aa ]{ZS}{Statische Zustandssynchronisierung}
+\abk[Aa ]{VL}{Virtual Leader}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Formelzeichen %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+%%% a - Skalare
+\abk[Fa01 ]{$\gamma$}{Konstante beim Entwurf eines reduzierten nichtlinearen Beobachters}
+\abk[Fa02 ]{$\theta_i$}{Zustand des $i$-ten Agenten auf dem Einheitskreis}
+\abk[Fa02b ]{$\kappa_i$}{Hilfsvariable bei der Steuer- und Beobachtbarkeitsanalyse des Differenzensystems}
+\abk[Fa03 ]{$\lambda$}{Eigenwert einer Matrix}
+\abk[Fa04 ]{$\varphi_i$}{Pendelwinkel des $i$-ten Agenten}
+\abk[Fa05 ]{$\omega$}{Winkelgeschwindigkeit}
+\abk[Fa06 ]{$a_0$}{Reglerkonstante}
+\abk[Fa07 ]{$a_{ij}^{'}$}{Elemente der transponierten Adjazenzmatrix eines Graphen}
+\abk[Fa08 ]{$d_\text{in/out}(i)$}{Ein- beziehungsweise Ausgangsgrad des Knotens $i$}
+\abk[Fa09 ]{$F_i$}{Am $i$-ten Schlitten angreifende Kraft}
+\abk[Fa10 ]{$g$}{Gravitationskonstante}
+\abk[Fa11 ]{$K$}{Natürliche Kapazitätsgrenze einer Population}
+\abk[Fa12 ]{$l_P$}{Pendellänge}
+\abk[Fa13 ]{$m_P$}{Pendelmasse}
+\abk[Fa14 ]{$m_S$}{Schlittenmasse}
+\abk[Fa15 ]{$n$}{Dimension der Agentendynamik}
+\abk[Fa16 ]{$N$}{Anzahl der Agenten eines Systems}
+\abk[Fa17 ]{$p$}{Dimension der Eingangsvektoren der Agenten}
+\abk[Fa18 ]{$p_i$}{Vorgegebener Pol beziehungsweise Eigenwert}
+\abk[Fa19 ]{$q$}{Dimension der Ausgangsvektoren der Agenten}
+\abk[Fa20 ]{$r$}{Spezifische Wachstumsrate einer Population}
+\abk[Fa21 ]{$s_i$}{Position des $i$-ten Schlittens}
+\abk[Fa22 ]{$w$}{Führungsgröße}
+
+
+%%% b - Vektoren
+\abk[Fb01 ]{$\vec{1}_N$}{Einsvektor der Länge $N$}
+\abk[Fb02 ]{$\vecgr{\Delta}$}{Zustandsvektor des Differenzensystems (bei linearen Systemen)}
+\abk[Fb03 ]{$\vecgrk{\varepsilon}$}{Schätzfehler im Differenzensystem}
+\abk[Fb04 ]{$\vecgrk{\eta}$}{Zustandsvektor des Differenzensystems (bei nichtlinearen Systemen)}
+\abk[Fb05 ]{$\tilde{\vecgrk{\eta}}$}{Geschätzter Zustandsvektor des Differenzensystems (bei nichtlinearen Systemen)}
+\abk[Fb06 ]{$\vecgrk{\mu}$}{Systemrauschen}
+\abk[Fb07 ]{$\vecgrk{\rho}$}{Messrauschen}
+\abk[Fb08 ]{$\vecgrk{\xi}$}{Hilfsvariable beim Entwurf eines reduzierten nichtlinearen Beobachters}
+\abk[Fb09 ]{$\vec{e}$}{Schätzfehler}
+\abk[Fb10 ]{$\vec{s}$}{Summe der verfügbaren Zustandsdifferenzen}
+\abk[Fb11 ]{$\tilde{\vec{s}}$}{Geschätzte Summe der verfügbaren Zustandsdifferenzen}
+\abk[Fb12 ]{$\vec{u}$}{Eingangs- beziehungsweise Steuervektor}
+\abk[Fb13 ]{$\vec{v}$}{Rechtseigenvektor}
+\abk[Fb14 ]{$\vect{w}$}{Linkseigenvektor}
+\abk[Fb15 ]{$\vec{x}$}{Zustandsvektor}
+\abk[Fb16 ]{$\vec{x}_\text{ges}$}{Zustandsvektor des Gesamtsystems}
+\abk[Fb17 ]{$\hat{\vec{x}}$}{Geschätzter Zustandsvektor}
+\abk[Fb18 ]{$\vec{y}$}{Messbarer Ausgangsvektor}
+\abk[Fb19 ]{$\vec{z}$}{Ausgangsvektor der Agentendynamik}
+
+
+%%% c - Matrizen
+\abk[Fc00 ]{$\vecgr{\Gamma}$}{Abkürzung beim Entwurf eines reduzierten Beobachters}
+\abk[Fc001 ]{$\vecgr{\Theta}$}{Abkürzung bei der Steuerbarkeitsanalyse des Differenzensystems}
+\abk[Fc002 ]{$\vecgr{\Lambda}$}{Abkürzung bei der Steuerbarkeitsanalyse des Differenzensystems}
+\abk[Fc01 ]{$\vec{A}$}{Systemmatrix der Agentendynamik}
+\abk[Fc02 ]{$\vec{A}_\text{ges}$}{Dynamikmatrix des Gesamtsystems}
+\abk[Fc03 ]{$\vec{A}\left(\mathcal G\right)$}{Adjazenzmatrix eines Graphen}
+\abk[Fc04 ]{$\vec{A}^{-1}$}{Inverse einer Matrix}
+\abk[Fc05 ]{$\vec{A}^{+}$}{Pseudoinverse einer Matrix}
+\abk[Fc06 ]{$\vec{A}^\top$}{Transponierte einer Matrix}
+\abk[Fc07 ]{$\vec{A}^{*}$}{Modaltransformierte einer Matrix}
+\abk[Fc08 ]{$\vec{A}^{'}$}{Systemmatrix des Differenzensystems oder transformierte Matrix}
+\abk[Fc09 ]{$\tvec{A}_N$}{Linksseitiges Kronecker-Produkt einer Matrix mit $\vec{I}_N$}
+\abk[Fc10 ]{$\ovec{A}_n$}{Rechtsseitiges Kronecker-Produkt einer Matrix mit $\vec{I}_n$}
+\abk[Fc11 ]{$\vec{B}$}{Eingangsmatrix der Agentendynamik}
+\abk[Fc12 ]{$\vec{B}^{'}$}{Eingangsmatrix des Differenzensystems}
+\abk[Fc13 ]{$\vec{C}$}{Ausgangsmatrix der Agentendynamik}
+\abk[Fc14 ]{$\vec{C}^{'}$}{Ausgangsmatrix des Differenzensystems}
+\abk[Fc15 ]{$\vec{D}$}{Differenzenmatrix}
+\abk[Fc16 ]{$\vec{D}_\text{in/out}\left(\mathcal G\right)$}{Ein- beziehungsweise Ausgangsgradmatrix eines Graphen}
+\abk[Fc17 ]{$\vec{H}$}{Beobachtermatrix}
+\abk[Fc18 ]{$\vec{I}_N$}{Einheitsmatrix der Dimension $N$}
+\abk[Fc19 ]{$\vec{K}$}{Reglermatrix}
+\abk[Fc20 ]{$\vec{L}\left(\mathcal G\right)$}{Laplacematrix eines Graphen, oft abkürzend $\vec{L}$}
+\abk[Fc21 ]{$\vec{M}$}{Beobachtermatrix des agenten-internen Beobachters}
+\abk[Fc22 ]{$\vec{M}_B$}{Beobachtbarkeitsmatrix}
+\abk[Fc23 ]{$\vec{M}_S$}{Steuerbarkeitsmatrix}
+\abk[Fc24 ]{$\vec{N}$}{Beobachtermatrix}
+\abk[Fc25 ]{$\vec{Q}$}{Kovarianzmatrix des Systemrauschens}
+\abk[Fc26 ]{$\vec{R}$}{Kovarianzmatrix des Messrauschens}
+\abk[Fc27 ]{$\vec{T}$}{Allgemeine Transformationsmatrix}
+\abk[Fc28 ]{$\vec{U}$}{Transformationsmatrix zum Übergang auf das Differenzensystem (in Verbindung mit $\vec{D}$)}
+\abk[Fc29 ]{$\vec{V}$}{Rechtseigenvektormatrix}
+\abk[Fc30 ]{$\vec{V}_B$}{Rechtseigenvektorblock}
+\abk[Fc31 ]{$\vec{W}$}{Linkseigenvektormatrix}
+\abk[Fc32 ]{$\vec{W}_B$}{Linkseigenvektorblock}
+
+%%% d - Mengen
+\abk[Fd ]{$\mathcal E$}{Kantenmenge eines Graphen}
+\abk[Fd ]{$\mathcal G$}{Graph, bestehend aus Knoten- und Kantenmenge}
+\abk[Fd ]{$\mathcal N_\text{in/out}(i)$}{Ein- beziehungsweise Ausgangsnachbarn des Knotens $i$}
+\abk[Fd ]{$\mathcal V$}{Knotenmenge eines Graphen}
+%\abk[Fa ]{$\left|\mathcal G \right|$}{Ordnung eines Graphen}
+
+
+%%% e - Funktionen
+\abk[Fe01 ]{$\vecgrk{\alpha}(\cdot)$}{Hilfsfunktion zum Entwurf eines reduzierten nichtlinearen Beobachters}
+\abk[Fe02 ]{$\vecgrk{\beta}(\cdot)$}{Hilfsfunktion zum Entwurf eines reduzierten nichtlinearen Beobachters}
+\abk[Fe03 ]{$\vecgr{\Phi_{\vec{y}}}(\cdot)$}{Hilfsfunktion zum Entwurf eines reduzierten nichtlinearen Beobachters}
+\abk[Fe04 ]{$\vecgr{\Phi_{\vec{y}}^L}(\cdot)$}{Linksinverse Abbildung von $\vecgr{\Phi_{\vec{y}}}(\cdot)$}
+\abk[Fe05 ]{$\vec{f}(\cdot)$}{Driftvektorfeld nichtlinearer eingangsaffiner Systeme}
+\abk[Fe06 ]{$\vec{g}(\cdot)$}{Eingangsvektorfeld nichtlinearer eingangsaffiner Systeme}
+
+
+%%% f - mathematische Ausdrücke
+\abk[Ff01 ]{$\text{det}(\cdot)$}{Determinante einer Matrix}
+\abk[Ff02 ]{$\text{eig}(\cdot)$}{Eigenwerte einer Matrix}
+\abk[Ff03 ]{$\text{rang}(\cdot)$}{Rang einer Matrix}
+\abk[Ff04 ]{$\text{sat}(\cdot)$}{Sättigungsfunktion}
+\abk[Ff05 ]{$\text{span}(\cdot)$}{Aufgespannter Unterraum}
+\abk[Ff06 ]{$L_{\vec{f}}h\left(\vec{x}\right)$}{Lie-Derivierte der Funktion $h\left(\vec{x}\right)$ entlang des Vektorfeldes $\vec{f}\left(\vec{x}\right)$}
