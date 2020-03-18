@@ -1,0 +1,39 @@
+python ~/thesis/models/research/domain_adaptation/domain_separation/dsn_train.py  \
+	--similarity_loss=dann_loss  \
+	--basic_tower=dann_mnist  \
+	--source_dataset=mixed  \
+	--target_dataset=mixed  \
+	--learning_rate=0.0117249  \
+	--gamma_weight=0.251175    \
+	--weight_decay=1e-6  \
+	--layers_to_regularize=fc3  \
+	--use_separation=True  \
+	--master=""  \
+	--dataset_dir=${DSN_DATA_DIR}    \
+	--use_logging    \
+	--training_name='mixed6sim2'	    \
+	--max_number_of_steps=120000    \
+	--domain_separation_startpoint=10000  \
+	--num_classes=6  \
+	--save_summaries_secs=1000  \
+	--save_interval_secs=1000
+
+python ~/thesis/models/research/domain_adaptation/domain_separation/dsn_train.py  \
+	--similarity_loss=dann_loss  \
+	--basic_tower=dann_mnist  \
+	--source_dataset=mixed  \
+	--target_dataset=mixed  \
+	--learning_rate=0.0117249  \
+	--gamma_weight=0.251175    \
+	--weight_decay=1e-6  \
+	--layers_to_regularize=fc3  \
+	--nouse_separation  \
+	--master=""  \
+	--dataset_dir=${DSN_DATA_DIR}    \
+	--use_logging    \
+	--training_name='mixed6simda'	    \
+	--max_number_of_steps=120000    \
+	--domain_separation_startpoint=10000  \
+	--num_classes=6  \
+	--save_summaries_secs=1000  \
+	--save_interval_secs=1000

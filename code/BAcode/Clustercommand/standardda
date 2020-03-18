@@ -1,0 +1,31 @@
+#!/bin/bash
+#SBATCH -J standda
+#SBATCH -a 1-10%10
+#SBATCH -o /home/rk64vona/thesis/jobs/log/train/standardda/out.%A_%a
+#SBATCH -e /home/rk64vona/thesis/jobs/log/train/standardda/err.%A_%a
+#SBATCH -D /home/rk64vona/thesis/models/research/domain_adaptation/domain_separation
+#SBATCH -t 04:00:00
+#SBATCH -n 16
+#SBATCH --mem-per-cpu=1500
+
+export PYTHONPATH=/home/rk64vona/thesis/models/research/slim:/home/rk64vona/thesis/models
+export DSN_DATA_DIR=/home/rk64vona/thesis/datasets
+export LOGDIR=/home/rk64vona/log/train/da
+
+python3.7 /thesis/models/research/domain_adaptation/domain_separation/dsn_train.py  \
+	--similarity_loss=dann_loss  \
+	--basic_tower=dann_mnist  \
+	--source_dataset=mnist  \
+	--target_dataset=mnist_m  \
+	--learning_rate=0.0117249  \
+	--gamma_weight=0.251175  \
+	--weight_decay=1e-6  \
+	--layers_to_regularize=fc3  \
+	--nouse_separation  \
+	--master=""  \
+	--dataset_dir=${DSN_DATA_DIR}  \
+	--use_logging    \
+	--training_name=standardda$SLURM_ARRAY_TASK_ID  \
+	--max_number_of_steps=100000    \
+	--save_summaries_secs=600  \
+	--save_interval_secs=600

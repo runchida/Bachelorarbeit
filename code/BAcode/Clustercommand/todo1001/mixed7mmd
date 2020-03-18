@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH -J 7mmd
+#SBATCH -a 1-10%10
+#SBATCH -o /home/rk64vona/thesis/jobs/log/train/mixed7mmd/out.%A_%a
+#SBATCH -e /home/rk64vona/thesis/jobs/log/train/mixed7mmd/err.%A_%a
+#SBATCH -D /home/rk64vona/thesis/models/research/domain_adaptation/domain_separation
+#SBATCH -t 05:00:00
+#SBATCH -n 16
+#SBATCH --mem-per-cpu=1500
+
+export PYTHONPATH=/home/rk64vona/thesis/models/research/slim:/home/rk64vona/thesis/models
+export DSN_DATA_DIR=/home/rk64vona/thesis/datasets
+export LOGDIR=/home/rk64vona/log/train/da
+
+cd ~/thesis
+singularity exec cont2  \
+python3.7 ~/thesis/models/research/domain_adaptation/domain_separation/dsn_train.py  \
+	--similarity_loss=mmd_loss  \
+	--basic_tower=dann_mnist  \
+	--source_dataset=mixed  \
+	--target_dataset=mixed  \
+	--learning_rate=0.0117249  \
+	--alpha_weight=0.1    \
+	--beta_weight=0    \
+	--gamma_weight=0.251175    \
+	--weight_decay=1e-6  \
+	--layers_to_regularize=fc3  \
+	--use_separation=True  \
+	--master=""  \
+	--dataset_dir=${DSN_DATA_DIR}    \
+	--use_logging    \
+	--training_name=mixed7mmd$SLURM_ARRAY_TASK_ID	    \
+	--max_number_of_steps=70000    \
+	--domain_separation_startpoint=10000  \
+	--num_classes=7    \
+	--save_summaries_secs=5000  \
+	--save_interval_secs=5000
