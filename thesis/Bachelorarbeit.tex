@@ -1,0 +1,221 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vorlage für Abschlussarbeiten
+% Fachgebiet Regelungsmethoden und Robotik
+% v1.6, 24.07.2018
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hauptdatei der LaTeX-Vorlage
+%
+% Kompiler: pdflatex oder latex > dvips > ps2pdf
+% Zeichenkodierung: UTF-8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,            	% Papierformat
+               12pt,               	% Schriftgr\"{o}{\ss}e
+               chapterprefix,      	% Wort "chapter" in Kapitel\"{u}berschrift
+               appendixprefix,		% Wort ``Anhang'' vor den Anhangskapiteln
+               headsepline,        	% Trennlinie zwischen Kopf und Text
+%                oneside,           % einseitiges Dokument
+               twoside,				% oder zweiseitig
+               %pointlessnumbers, 	% Nummerierung ohne Punkte am Ende z.B. 1.3
+               %bigheadings,		% Größe der Überschriften
+               draft=false]         % Ausschalten der Fehleranzeige
+               {scrbook}			% wir schreiben ein Buch (KOMA-Buch)
+\usepackage[utf8]{inputenc}			% Quelltext UTF-8 kodiert
+
+\makeatletter
+\if@twoside
+	\setlength{\oddsidemargin}{6mm}
+	\setlength{\evensidemargin}{-6mm}
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------ vordefinierte Variablen --------
+% (mit eigenen Angaben füllen!)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\BaMaType}{Bachelor Thesis}  % Bachelor-Thesis oder Master-Thesis
+\newcommand{\BaMaAuthor}{Runchida Kaewngoen}  % Name des Verfassers
+\newcommand{\BaMaProgramme}{Studiengang Elektrotechnik und Informationstechnik}	 % Studiengang
+\newcommand{\BaMaTitle}{Survey on Image Classification in the Domain Mixture Scenario}  % Titel der Arbeit
+\newcommand{\BaMaFinishDate}{10.02.2020}  % Einreichungsdatum der Arbeit
+\newcommand{\BaMaSupervisor}{Sebastian Schrom, M.Sc.} % Betreuer (Wissenschaftlicher Mitarbeiter)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Defintion Referenzen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\figref}[1]{Abb. \ref{#1}}
+\newcommand{\thmref}[1]{Satz \ref{#1}}
+\newcommand{\chref}[1]{Kapitel \ref{#1}}
+\newcommand{\secref}[1]{Abschnitt \ref{#1}}
+\newcommand{\tabref}[1]{Tabelle \ref{#1}}
+\newcommand{\defref}[1]{Definition \ref{#1}}
+\newcommand{\bspref}[1]{Bsp. \ref{#1}}
+\newcommand{\corref}[1]{Korollar \ref{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BaMa-Header (Deutsch/Englisch)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% => include 'BaMa_Header_english' instead of 'BaMa_Header_deutsch' if you write in your thesis in english!
+\include{BaMa_Header_english}	% Header mit sprachspezifischen Voreinstellungen
+\include{BaMa_Header_main}		% Header mit den wichtigen Voreinstellungen laden - NICHT ÄNDERN!!!!!
+                            	% => alle BaMa sehen gleich aus.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Styles für mathematische Definitionen etc.     
+% (kann natürlich angepasst werden!)             
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Definitionen, Sätze, Beispiele, Beweise (ohne THMBOX)
+\newtheoremstyle{defstyle}
+	{9pt}									% space above
+	{9pt}									% space below
+	{\itshape}							% bodyfont
+	{}											% indent
+	{\normalfont\bfseries}	% head font
+	{\normalfont}					% head punctuation
+	{\newline}							% head space
+	{{\normalfont\bfseries \thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}}											% manually specify head
+\theoremstyle{defstyle}
+\newtheorem{defi}{Definition}[chapter]
+\newtheorem{satz}{Satz}[chapter]
+\newtheorem{cor}{Korollar}[chapter]
+\newtheorem{hyp}{Hypothese}[chapter]
+
+\newtheoremstyle{bspstyle}
+	{9pt}										% space above
+	{9pt}										% space below
+	{\normalfont}						% bodyfont
+	{}											% indent
+	{\normalfont\bfseries}	% head font
+	{\normalfont :}					% head punctuation
+	{ }											% head space
+	{}											% manually specify head
+\theoremstyle{bspstyle}
+\newtheorem{bsp}{Beispiel}[chapter]
+\newtheorem{bew}{Beweis}[chapter]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mathe-Makros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\vec}[1]{\bm{#1}}
+\newcommand{\vecgrk}[1]{\mbox{\boldmath{$#1$}}}
+\newcommand{\vecgr}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\bm{#1}^\top}
+\newcommand{\tvec}[1]{\tilde{\bm{#1}}}
+\newcommand{\ovec}[1]{\overline{\bm{#1}}}
+\newcommand{\rang}[1]{\text{rang}\left(#1\right)}
+\newcommand{\eig}[1]{\text{eig}\left(#1\right)}
+\newcommand{\deter}[1]{\text{det}\left(#1\right)}
+\newcommand{\Span}[1]{\text{span}\left\{#1\right\}}
+\DeclareMathAlphabet\mathbb{U}{fplmbb}{m}{n}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tikz-Definitionen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% farben
+\definecolor{myred}{rgb}{0.938,0.094,0.094}
+\definecolor{mygreen}{rgb}{0.270,0.785,0.125}
+\definecolor{myblue}{rgb}{0.148,0.363,0.828}
+\definecolor{mycyan}{rgb}{0.148,0.902,0.918}
+
+
+% tikz
+\tikzstyle{graphnode} = [circle,draw=blue!50,fill=blue!20,thick,inner sep=0.5pt,minimum size=6mm]
+%\tikzstyle{graphnode} = [circle,draw=blue!50,fill=blue!10,thick,inner sep=0.5pt,minimum size=6mm]
+\tikzstyle{block} = [rectangle,draw,fill=blue!10,minimum height=12mm,minimum width=10mm]
+\tikzstyle{smallblock} = [rectangle,draw,fill=blue!10,minimum height=7mm,minimum width=10mm]
+\tikzstyle{dot} = [circle,draw,fill=black,inner sep=1pt]
+\tikzstyle{invdot} = [circle,minimum size=0mm,inner sep=0pt,outer sep=0pt]
+\tikzstyle{every label} = [font=\fontsize{12}{12}\selectfont]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\tikzstyle{dickerpfeil} = [single arrow, draw]
+
+\pgfplotsset{compat=newest}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abkürzungsverzeichnis
+% (muss nicht enthalten sein, je nach Arbeit)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Verwendung:
+% * "\makenomenclature", "\input{abkuerzungen}" und "\printnomenclature" (weiter unten) einkommentieren
+% * im Latex-Editor "Makeindex" so konfigurieren, dass es mit "makeindex %.nlo -s nomencl.ist -o %.nls" ausgeführt wird
+% * LaTeX ausführen, dann Makeindex über Latex-Editor ausführen und dann nochmal LaTeX ausführen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\makenomenclature
+%\input{abkuerzungen}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% richtige Silbentrennung
+% (wird manchmal benötigt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\hyphenation{a-symp-to-tisch}
+
+\captionsetup[figure]{singlelinecheck=off,justification=justified}
+\captionsetup[subfigure]{singlelinecheck=off,justification=justified}
+\usepackage[justification=justified]{caption}
+\usepackage[justification=justified]{subcaption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%============--- Dokument =======================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\frontmatter			% umfasst den ganzen Vorspann, klein-römische Seitenzahlen
+\maketitle				% setzt die Titelseite, Widmung und Erklärung
+\begin{BaMaAbstract}{	% Setzt den Abstract und die Zusammenfassung der Arbeit
+	% english abstract
+	There are often situations in which we have to train a neural network using another dataset than the one it should perform a task on. If the network trains only on this existing data, it would normally perform poorly due to different data distributions. To train the network to adapt to these differences, domain adaptation is introduced. Most works done on domain adaptation assume that at least a domain available at the training time has supervised samples of every classes. In the real world, this assumption cannot always be made. Often, a completed dataset is created by combining domains which alone has labeled data for only some classes. Only by combining these domains do we achieve a complete supervised dataset. In this thesis, this scenario, the domain mixture scenario, is investigated by using the domain separation network. This neural network complements the construction of domain-free input representations by separating domain-specific features of each domain from the domain-free representations. In the experiments, the performance of this neural network with different loss function combinations will be observed under the domain mixture scenario.
+}{ 
+	% german abstract
+	Oft werden neuronale Netzwerke auf vorhandenen Daten trainiert, die nicht direkt den Testdaten entsprechen. Daraus ergibt sich eine suboptimale Leistung, da die Datenverteilung der Datensätze nicht berücksichtigt werden. Um die Unterschiede in den Datenverteilungen zu überwinden, wird die Methode der Domänenadaption verwendet. Bisher wurden dafür die Szenarien primär angenommen, in denen mindestens eine Domäne zur Verfügung steht, die über überwachten Daten von allen Objekten verfügen. Jedoch entspricht diese Annahme in den meisten Fällen nicht der Realität. Um Datensätze zu generieren, werden häufig verschiedenen Domänen zusammengesetzt, die alleine für nicht alle Klassen gelabelten Daten anbieten können. Ausschließlich durch ihre Vereiningung kann ein Datensatz entstehen, bei dem alle Klassen mit gelabelten Daten vertreten sind. In dieser Arbeit wird dieses Szenario, das sogenannte gemischte Domänen Szenario, unter Verwendung des Domain Separation Networks untersucht. Dieses neuronale Netz lernt domänen-unabhängige Merkmalsrepräsentationen unter anderem dadurch, dass es domänen-spezifische Merkmale von domänen-unabhängigen Merkmalen durch zusätzliche Kostenfunktionen separiert. In den Experimenten dieser Arbeit wird die Generalisierungsfähigkeit des Netzwerks mit verschiedenen Kombinationen der Kostenfunktion in Kontext des gemischten Domänen Szenarios untersucht.}
+\end{BaMaAbstract}
+
+%\begin{BaMaAcknowledgements}{	% Danksagung
+%	Danksagung (kann man machen, muss man nicht)
+%}
+%\end{BaMaAcknowledgements}
+\setcounter{secnumdepth}{4} % Überschriften bis 4. Ebene nummerieren
+\tableofcontents		% setzt das Inhaltsverzeichnis
+%\listoffigures			% setzt das Abbildungsverzeichnis; keine Bilder? -> auskommentieren
+%\listoftables			% setzt das Tabellenverzeichnis; keine Tabellen? -> auskommentieren
+ 
+%\markboth{\nomname}{\nomname}  % Header = Abkürzungsverzeichnis
+%\printnomenclature     % Abkürzungsverzeichnis
+
+
+\mainmatter				% zuständig für den Hauptteil der Arbeit (Kapitel 1 bis ...), arabische Seitenzahlen
+\input{intro}
+\input{neuronalNetwork}
+\input{domainMixture}
+\input{dsn}
+\input{results}
+\input{conclusion}
+% HIER WEITERE ABSCHNITTE EINFÜGEN
+
+
+%\appendix			% schaltet Umgebunsvariablen um auf Anhang
+%\input{appendix1}		% erster Teil des Anhangs (wird eher selten benötigt)
+
+\backmatter			% Literaturverzeichnis, Index usw.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Literatur
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\raggedright\sloppy
+\bibliography{Literatur}		% Name der *.bib Datei in der die Literatur steht
+\endgroup
+%nocite{*}						% Auflisten aller Quellen, auch wenn diese nicht in der Arbeit zitiert sind
+
+% Stil des Literaturverzeichnis (nach DIN1505)
+%\bibliographystyle{unsrtdin} % sortiert nach Reihenfolge im Text mit Nummern
+\bibliographystyle{plaindin} % alphabetisch sortiert mit Nummer
+%\bibliographystyle{alphadin} % alphabetisch sortiert mit Autor-Jahr-Kürzel statt Nummer
+
+\end{document}

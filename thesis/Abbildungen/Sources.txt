@@ -1,0 +1,26 @@
+cnn:
+https://towardsdatascience.com/mnist-handwritten-digits-classification-using-a-convolutional-neural-network-cnn-af5fafbc35e9
+
+conv:
+https://peltarion.com/knowledge-center/documentation/modeling-view/build-an-ai-model/blocks/2d-convolution-block
+
+annSimp:
+https://www.researchgate.net/figure/Schematic-representation-of-an-artificial-neural-network_fig4_326615046
+
+GD:
+https://shashank-ojha.github.io/ParallelGradientDescent/
+
+perceptron:
+https://missinglink.ai/guides/neural-network-concepts/perceptrons-and-multi-layer-perceptrons-the-artificial-neuron-at-the-core-of-deep-learning/
+
+under-overfitting (Anup Bhande):
+https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76
+
+pooling (Rishabh garg
+):
+https://towardsdatascience.com/https-medium-com-rishabh-grg-the-ultimate-nanobook-to-understand-deep-learning-based-image-classifier-33f43fea8327
+
+
+Target accuracy of the DSN with all losses activated when trained $m$ supervised classes from $S$ and $M$ 
+
+  \caption{Diagram 1 Placeholder} Target accuracy of the DSN with all losses activated when trained $m$ supervised classes from $S$ and $M$ .

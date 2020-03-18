@@ -1,0 +1,57 @@
+\chapter{Zustandssynchronisierung allgemeiner linearer Systeme beliebiger Ordnung} \label{ch:zustandssynchro}
+
+TEXT
+
+\section{Beschreibung des linearen Gesamtsystems} \label{sec:systembeschreibung lin}
+TEXT in Abschnitt
+
+\begin{bsp} \label{bsp:kommtopo}
+	Am Beispiel des Kommunikationsgraphen aus \figref{fig:bspkommunikationsgraph} soll dies verdeutlicht werden. Die Anzahl der Agenten ist $N=3$ und die beschreibenden Matrizen sind
+%\begin{equation}
+%	\vec{A}\left(\mathcal G\right) = \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 1 \\ 0 & 1 & 0 & 0 \\ 1 & 0 & 1 & 0\end{bmatrix}, \quad \vec{L}\left(\mathcal G\right) = \begin{bmatrix}1 & 0 & 0 & -1 \\ -1 & 2 & -1 & 0 \\ 0 & -1 & 2 & -1 \\ 0 & -1 & 0 & 1\end{bmatrix}.
+%\end{equation}
+%Aus der gerichteten Kante $(1,2)$ geht hervor, dass der Agent $1$ Information an den Agenten $2$ sendet. Dies bedeutet, dass der Agent $2$ über die Zustandsdifferenz zu Agent $1$ verfügt und diese Information für die Regelung nutzen kann. Weiterhin besitzt der Agent $2$ Kenntnis über die Relativinformation bezüglich Agent $3$, wogegen der Agent $1$ lediglich über die Zustandsdifferenz zu Agent $4$ verfügt.
+	\begin{equation}
+		\vec{A}\left(\mathcal G\right) = \begin{bmatrix}0 & 1 & 0 \\ 1 & 0 & 1 \\ 1 & 0 & 0\end{bmatrix}, \quad \vec{L}\left(\mathcal G\right) = \begin{bmatrix}2 & -1 & -1 \\ -1 & 1 & 0 \\ 0 & -1 & 1\end{bmatrix}.
+	\end{equation}
+	Aus der gerichteten Kante $(2,1)$ geht beispielsweise hervor, dass der Agent $2$ Information an den Agenten $1$ sendet. Dies bedeutet, dass der Agent $1$ über die Zustandsdifferenz zu Agent $2$ verfügt und diese Information für die Regelung nutzen kann. Weiterhin besitzt der Agent $1$ Kenntnis über die Relativinformation bezüglich Agent $3$, wogegen der Agent $3$ lediglich über die Zustandsdifferenz zu Agent $2$ verfügt.
+\end{bsp}
+
+\begin{figure} [tbh]
+	\centering
+		\input{abbildungen/abb_bspkommunikationsgraph_3agenten}
+	\caption{Kommunikationsgraph des betrachteten Beispielsystems}
+	\label{fig:bspkommunikationsgraph}
+\end{figure}
+
+%\paragraph{Agenten} \label{sec:Agenten}
+Die Dynamik der einzelnen Agenten wird durch das Zustandsraummodell \eqref{eq:agenten} beschrieben. Da jeder Agent über die Relativinformation bezüglich seiner Eingangsnachbarn verfügt, wird die Summe der Zustandsdifferenzen zwischen Agent $i$ und seinen Eingangsnachbarn als Ausgang definiert. Die Dynamik lässt sich folglich durch
+\begin{subequations} \label{eq:agenten}
+	\begin{align}
+		\dot{\vec{x}_i} &= \vec{A}\vec{x}_i + \vec{B}\vec{u}_i, \label{eq:agenten 1} \\
+		\vec{y}_i &= \sum_{j \, \in \, \mathcal N_\text{in}(i)}^{}{\left(\vec{x}_i - \vec{x}_j\right)} = \sum_{j=1}^{N}{a_{ij}^{'}\left(\vec{x}_i - \vec{x}_j\right)} \label{eq:agenten 2}
+	\end{align}
+\end{subequations}
+ausdrücken. Darin sind $a_{ij}^{'}$ die Elemente der transponierten Adjazenzmatrix $\vec{A}^\top\left(\mathcal G\right)$ des Kommunikationsgraphen. Wie bereits beschrieben sendet ein Agent $i$ Informationen an einen Agenten $j$, wenn $a_{ij}=1$ ist. Für den späteren Entwurf einer Regelung ist es jedoch entscheidend, von welchen Agenten Information empfangen wird. Daher treten in der Ausgangsgleichung die Elemente der transponierten Adjazenzmatrix auf - ein Eintrag $a_{ij}^{'}=1$ bedeutet, das der Agent $i$ Information von Agent $j$ erhält. Es sei darauf hingewiesen, dass die beschriebenen Elemente $a_{ij}^{'}$ nicht mit den Elementen der Systemmatrix $\vec{A}$ der Agenten zu verwechseln sind. Für die Zustände gilt $\vec{x}_i \in \mathbb{R}^n$, die Dimension der Steuervektoren $\vec{u}_i$ ist $p$. Das Gesamtsystem besteht aus $N$ Agenten, wobei die vollständige Steuerbarkeit des Paares $(\vec{A},\vec{B})$, das heißt der einzelnen Agenten, vorausgesetzt wird. 
+
+
+Zusammenfassend gilt der folgende Satz.
+\begin{satz}[Dynamik des Gesamtsystems] \label{thm:gesamtsystem}
+%\begin{satz}[Dynamik des Gesamtsystems] \label{thm:gesamtsystem}
+	Gegeben sei ein System aus $N$ homogenen linearen Agenten beliebiger Dynamik der Ordnung $n$, die durch
+	\begin{align*}
+		\dot{\vec{x}}_i &= \vec{A}\vec{x}_i + \vec{B}\vec{u}_i,\\
+		\vec{y}_i &= \sum_{j=1}^N{a_{ij}^{'}\left(\vec{x}_i-\vec{x}_j\right)}
+	\end{align*}
+	beschrieben werden. Die Dynamik des Gesamtsystems wird dann durch die Gleichungen
+	\begin{align*}\begin{split} \label{eq:gesamtsystem}
+		\dot{\vec{x}} &= \tvec{A}_N \vec{x} + \tvec{B}_N \vec{u}, \\
+		\vec{y} &= \ovec{L}_n \vec{x}
+	\end{split}\end{align*}
+	beschrieben. Darin sind
+	\begin{align}
+		\vect{x} &= \begin{bmatrix}\vect{x}_1 & \vect{x}_2 & \cdots & \vect{x}_N\end{bmatrix} \in \mathbb{R}^{nN}, \notag\\[10pt]
+		\vect{u} &= \begin{bmatrix}\vect{u}_1 & \vect{u}_2 & \cdots & \vect{u}_N\end{bmatrix} \in \mathbb{R}^{pN}, \\
+		\vect{y} &= \begin{bmatrix}\vect{y}_1 & \vect{y}_2 & \cdots & \vect{y}_N\end{bmatrix} \in \mathbb{R}^{nN}.
+	\end{align}
+\end{satz}
